@@ -1,0 +1,7 @@
+bangpound_drupal_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: BangpoundDrupalBundle:Default:index }
+
+bangpound_drupal:
+    resource: .
+    type: drupal

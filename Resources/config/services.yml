@@ -1,0 +1,56 @@
+parameters:
+    bangpound_drupal.http_kernel.class: Bangpound\Bundle\DrupalBundle\DependencyInjection\ContainerAwareLegacyPhpHttpKernel
+    bangpound_drupal.controller_resolver.class: Bangpound\Bundle\DrupalBundle\Controller\ControllerResolver
+    bangpound_drupal.response.class: Symfony\Component\HttpFoundation\Response
+    bangpound_drupal.listener.request.class: Bangpound\Bundle\DrupalBundle\EventListener\RequestListener
+    bangpound_drupal.listener.view.class: Bangpound\Bundle\DrupalBundle\EventListener\ViewListener
+    bangpound_drupal.listener.exception.class: Bangpound\Bundle\DrupalBundle\EventListener\ExceptionListener
+    bangpound_drupal.routing_loader.class: Bangpound\Bundle\DrupalBundle\Routing\DrupalLoader
+    bangpound_drupal.listener.shutdown.class: Bangpound\Bundle\DrupalBundle\EventListener\ShutdownListener
+    bangpound_drupal.globals.class: Bangpound\Bundle\DrupalBundle\Globals
+
+services:
+    bangpound_drupal.response:
+        class: %bangpound_drupal.response.class%
+
+    bangpound_drupal.listener.request:
+        class: %bangpound_drupal.listener.request.class%
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    bangpound_drupal.listener.view:
+        class: %bangpound_drupal.listener.view.class%
+        calls:
+            - [ 'setContainer', [ @service_container ] ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.view, method: onKernelView }
+
+    bangpound_drupal.listener.exception:
+        class: %bangpound_drupal.listener.exception.class%
+        calls:
+            - [ 'setContainer', [ @service_container ] ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+    bangpound_drupal.listener.shutdown:
+        class: %bangpound_drupal.listener.shutdown.class%
+        calls:
+            - [ 'setContainer', [ @service_container ] ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 31 }
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController, priority: 512 }
+            - { name: kernel.event_listener, event: kernel.view, method: onKernelPostController, priority: 512 }
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelPostController, priority: 512 }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelPostController, priority: 512 }
+            - { name: kernel.event_listener, event: kernel.terminate, method: onKernelPostController, priority: 512 }
+
+    bangpound_drupal.routing_loader:
+        class: %bangpound_drupal.routing_loader.class%
+        tags:
+            - { name: routing.loader }
+
+    bangpound_drupal.globals:
+        class: %bangpound_drupal.globals.class%
+        lazy: false
+        calls:
+            - [ 'offsetSet', ['response', @bangpound_drupal.response ] ]
