@@ -52,7 +52,6 @@ services:
 
     bangpound_drupal.globals:
         class: %bangpound_drupal.globals.class%
-        lazy: false
         calls:
             - [ 'offsetSet', ['response', @bangpound_drupal.response ] ]
             - [ 'offsetSet', ['session', @session ] ]
