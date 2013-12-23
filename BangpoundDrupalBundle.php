@@ -22,7 +22,7 @@ class BangpoundDrupalBundle extends Bundle
         $this->container->get('bangpound_drupal.globals');
 
         require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
-        drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL, TRUE, 'Bangpound\\Drupal\\Bootstrap\\AutoloadBootstrap');
+        drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL, TRUE, $this->container->getParameter('bangpound_drupal.bootstrap.class'));
     }
 
     public function build(ContainerBuilder $container)
