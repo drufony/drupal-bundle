@@ -22,6 +22,13 @@ class Bootstrap extends AutoloadBootstrap {
 
         };
 
+        $this[DRUPAL_BOOTSTRAP_SESSION] = function () {
+            /** @var \Symfony\Component\HttpKernel\Kernel $kernel */
+            $kernel = $GLOBALS['kernel'];
+            require_once $kernel->getBundle('BangpoundDrupalBundle')->getPath() .'/Resources/handler/session.inc';
+            drupal_session_initialize();
+        };
+
         $this[DRUPAL_BOOTSTRAP_PAGE_CACHE] = function () {
             $this['_drupal_bootstrap_page_cache__plugins'];
         };
