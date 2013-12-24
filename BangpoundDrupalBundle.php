@@ -23,14 +23,18 @@ class BangpoundDrupalBundle extends Bundle
         // This is required to inject the response and other services into the global namespace.
         $globalz = $this->container->get('bangpound_drupal.globals');
 
-        /** @var \Symfony\Component\HttpFoundation\Request $request */
-        $request = $globalz['request'];
-        $globalz['base_url'] = $request->getSchemeAndHttpHost();
-
         require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
-        drupal_override_server_variables(array(
-            'url' => $request->getSchemeAndHttpHost() .'/'. basename($request->server->get('SCRIPT_FILENAME')),
-        ));
+
+        if (isset($globalz['request'])) {
+            /** @var \Symfony\Component\HttpFoundation\Request $request */
+            $request = $globalz['request'];
+            $globalz['base_url'] = $request->getSchemeAndHttpHost();
+
+            drupal_override_server_variables(array(
+                'url' => $request->getSchemeAndHttpHost() .'/'. basename($request->server->get('SCRIPT_FILENAME')),
+            ));
+        }
+
         drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL, TRUE, $this->container->getParameter('bangpound_drupal.bootstrap.class'));
     }
 
