@@ -16,6 +16,9 @@ function drupal_session_initialize() {
   $session = $GLOBALS['session'];
 
   drupal_session_start();
+  if (!empty($user->uid) || !empty($_SESSION)) {
+    drupal_page_is_cacheable(FALSE);
+  }
   if (0 === $session->get('drupal_uid', 0)) {
     $user = drupal_anonymous_user();
   }
