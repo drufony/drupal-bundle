@@ -95,7 +95,13 @@ class Bootstrap extends AutoloadBootstrap
         };
 
         $this[DRUPAL_BOOTSTRAP_PAGE_CACHE] = function () {
-            $this['_drupal_bootstrap_page_cache__plugins'];
+            // Allow specifying special cache handlers in settings.php, like
+            // using memcached or files for storing cache information.
+            require_once DRUPAL_ROOT . '/includes/cache.inc';
+            foreach (variable_get('cache_backends', array()) as $include) {
+                require_once DRUPAL_ROOT . '/' . $include;
+            }
+            drupal_block_denied(ip_address());
         };
     }
 }
