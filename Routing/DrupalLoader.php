@@ -52,13 +52,19 @@ class DrupalLoader implements LoaderInterface
                     $part = '{p'. $index++ .'}';
                 }
             }
+            if (!isset($drupal_router[$key .'/%'])) {
+                if ($router_item['_parts'][$index] != '%') {
+                    $parts[] = '{p'. $index++ .'}';
+                }
+                $requirements = array(
+                    'p'. ($index - 1) => '.+',
+                );
+            }
+
             $pattern = '/'. implode('/', $parts);
             $defaults = array(
                 // Flag this request as Drupal answerable.
                 '_drupal' => true,
-            );
-            $requirements = array(
-                'p'. ($index - 1) => '.+',
             );
 
             $route = new Route($pattern, $defaults, $requirements);
