@@ -79,7 +79,9 @@ function drupal_session_commit() {
     if (!drupal_session_started()) {
       drupal_session_start();
     }
-    $session->set('drupal_uid', $user->uid);
+    if (!empty($user->uid)) {
+      $session->set('drupal_uid', $user->uid);
+    }
   }
 }
 
