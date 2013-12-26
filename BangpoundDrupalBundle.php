@@ -34,8 +34,7 @@ class BangpoundDrupalBundle extends Bundle
             drupal_override_server_variables(array(
                 'url' => $request->getSchemeAndHttpHost() .'/'. basename($request->server->get('SCRIPT_FILENAME')),
             ));
-        }
-        else {
+        } else {
             $globalz['base_url'] = 'http://localhost';
             drupal_override_server_variables(array(
                 'url' => 'http://localhost',
