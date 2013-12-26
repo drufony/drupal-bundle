@@ -24,10 +24,11 @@ class RequestListener
         $request = $event->getRequest();
         if ($request->attributes->get('_drupal', false)) {
             if ('/' == $request->getPathInfo()) {
-                $router_item = menu_get_item(variable_get('site_frontpage', 'node'));
+                $_GET['q'] = variable_get('site_frontpage', 'node');
             } else {
-                $router_item = menu_get_item(substr($request->getPathInfo(), 1));
+                $_GET['q'] = urldecode(substr($request->getPathInfo(), 1));
             }
+            $router_item = menu_get_item();
 
             if (!$router_item['access']) {
                 throw new AccessDeniedHttpException;

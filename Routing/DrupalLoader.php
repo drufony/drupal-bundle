@@ -52,26 +52,17 @@ class DrupalLoader implements LoaderInterface
                     $part = '{p'. $index++ .'}';
                 }
             }
-            if (!isset($drupal_router[$key .'/%'])) {
-                if ($router_item['_parts'][$index] != '%') {
-                    $parts[] = '{p'. $index++ .'}';
-                }
-                $requirements = array(
-                    'p'. ($index - 1) => '.+',
-                );
-            }
 
-            $pattern = '/'. implode('/', $parts);
-            $defaults = array(
-                // Flag this request as Drupal answerable.
-                '_drupal' => true,
-            );
+            $route = new Route('/'. implode('/', $parts));
 
-            $route = new Route($pattern, $defaults, $requirements);
+            // Flag this request as Drupal answerable.
+            $route->setDefault('_drupal', true);
+
+            // Special compiler class allows Drupal routes to have optional parameters.
+            $route->setOption('compiler_class', 'Bangpound\\Bundle\\DrupalBundle\\Routing\\RouteCompiler');
 
             // add the new route to the route collection:
-            $routeName = $key;
-            $routes->add($routeName, $route);
+            $routes->add($key, $route);
         }
 
         $this->loaded = true;
