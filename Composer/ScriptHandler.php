@@ -3,6 +3,7 @@
 namespace Bangpound\Bundle\DrupalBundle\Composer;
 
 use Composer\Script\CommandEvent;
+use Symfony\Component\Filesystem\Filesystem;
 
 class ScriptHandler
 {
@@ -16,6 +17,7 @@ class ScriptHandler
         $options = self::getOptions($event);
         $webDir = $options['symfony-web-dir'];
         $composer = $event->getComposer();
+        $filesystem = new Filesystem();
 
         $drupal_root = $composer->getConfig()->get('vendor-dir') . DIRECTORY_SEPARATOR .
             $composer->getPackage()->getRequires()['drupal/drupal']->getTarget();
@@ -25,17 +27,23 @@ class ScriptHandler
             'misc',
             'modules',
             'profiles',
-            'sites',
             'themes',
         );
 
         foreach ($directories as $directory) {
-            $target = '../'. $drupal_root .'/'. $directory;
-            $link = $webDir.'/'.$directory;
-            if (is_link($link) || file_exists($link)) {
-                unlink($link);
-            }
-            symlink($target, $link);
+            $originDir = '../'. $drupal_root .'/'. $directory;
+            $targetDir = $webDir.'/'.$directory;
+            echo sprintf('Creating symlink for Drupal\'s \'%s\' directory', $directory) . PHP_EOL;
+            $filesystem->symlink($originDir, $targetDir);
+        }
+
+        $directory = 'sites';
+        $targetDir = $webDir.'/'.$directory;
+
+        if (!$filesystem->exists($targetDir)) {
+            $originDir = $drupal_root .'/'. $directory;
+            echo sprintf('Creating new sites directory', $directory) . PHP_EOL;
+            $filesystem->mirror($originDir, $targetDir);
         }
     }
 
