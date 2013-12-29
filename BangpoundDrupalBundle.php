@@ -17,7 +17,10 @@ class BangpoundDrupalBundle extends Bundle
      */
     public function boot()
     {
-        define('DRUPAL_ROOT', realpath($this->container->get('kernel')->getRootDir() .'/../web'));
+        // Console applications boot twice, which leads to harmless but noisy PHP warnings.
+        if (!defined('DRUPAL_ROOT')) {
+            define('DRUPAL_ROOT', realpath($this->container->get('kernel')->getRootDir() .'/../web'));
+        }
 
         // This is required to inject the response and other services into the global namespace.
         $globalz = $this->container->get('bangpound_drupal.globals');
