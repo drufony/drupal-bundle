@@ -37,6 +37,9 @@ class ScriptHandler
             $filesystem->symlink($originDir, $targetDir);
         }
 
+        echo sprintf('Creating symlink of app.php to index.php for Drush compatability') . PHP_EOL;
+        $filesystem->symlink('app.php', $webDir .'/index.php');
+
         $directory = 'sites';
         $targetDir = $webDir.'/'.$directory;
 
