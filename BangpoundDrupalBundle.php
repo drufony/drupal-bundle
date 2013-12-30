@@ -34,15 +34,16 @@ class BangpoundDrupalBundle extends Bundle
             $request = $globalz['request'];
             $globalz['base_url'] = $request->getSchemeAndHttpHost();
 
-            drupal_override_server_variables(array(
+            $variables = array(
                 'url' => $request->getSchemeAndHttpHost() .'/'. basename($request->server->get('SCRIPT_FILENAME')),
-            ));
+            );
         } else {
             $globalz['base_url'] = 'http://localhost';
-            drupal_override_server_variables(array(
+            $variables = array(
                 'url' => 'http://localhost',
-            ));
+            );
         }
+        drupal_override_server_variables($variables);
 
         drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL, TRUE, $this->container->getParameter('bangpound_drupal.bootstrap.class'));
     }
