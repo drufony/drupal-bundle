@@ -29,8 +29,6 @@ class DrupalLoader implements LoaderInterface
         }
 
         $routes = new RouteCollection();
-        $route = new Route('/', array('_drupal' => true));
-        $routes->add('site_frontpage', $route);
 
         $drupal_router = menu_get_router();
         uasort($drupal_router, function ($a, $b) {
@@ -44,7 +42,7 @@ class DrupalLoader implements LoaderInterface
             return -1;
         });
 
-        foreach ($drupal_router as $key => $router_item) {
+        foreach ($drupal_router as $router_item) {
             $index = 0;
             $parts = $router_item['_parts'];
             foreach ($parts as &$part) {
@@ -53,10 +51,8 @@ class DrupalLoader implements LoaderInterface
                 }
             }
 
-            $route = new Route('/'. implode('/', $parts));
-
             // Flag this request as Drupal answerable and set the callback.
-            $route->setDefaults(array(
+            $route = new Route('/'. implode('/', $parts), array(
                 '_drupal' => true,
                 '_controller' => $router_item['page callback'],
             ));
@@ -64,9 +60,18 @@ class DrupalLoader implements LoaderInterface
             // Special compiler class allows Drupal routes to have optional parameters.
             $route->setOption('compiler_class', 'Bangpound\\Bundle\\DrupalBundle\\Routing\\RouteCompiler');
 
-            // add the new route to the route collection:
-            $routes->add($key, $route);
+            // add the new route to the route collection.
+            // The closest thing we have to a route name is the the path property.
+            $routes->add($router_item['path'], $route);
         }
+
+        // Create route for the Drupal home page.
+        $router_item = menu_get_item(variable_get('site_homepage', 'node'));
+        $route = new Route('/', array(
+            '_drupal' => true,
+            '_controller' => $router_item['page_callback'],
+        ));
+        $routes->add('site_frontpage', $route);
 
         $this->loaded = true;
 
