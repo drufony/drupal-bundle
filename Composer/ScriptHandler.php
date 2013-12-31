@@ -38,12 +38,14 @@ class ScriptHandler
         }
 
         $directory = 'sites';
-        $targetDir = $webDir.'/'.$directory;
+        $targetDir = $webDir.'/'.$directory .'/';
 
-        if (!$filesystem->exists($targetDir)) {
+        // Check for sites/default because sites/all may exist if composer installs
+        // modules or themes.
+        if (!$filesystem->exists($targetDir .'/default')) {
             $originDir = $drupal_root .'/'. $directory;
             echo sprintf('Creating new sites directory', $directory) . PHP_EOL;
-            $filesystem->mirror($originDir, $targetDir);
+            $filesystem->mirror($originDir, $targetDir, null, array('override' => true));
         }
     }
 
