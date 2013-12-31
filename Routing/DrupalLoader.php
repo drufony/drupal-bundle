@@ -55,8 +55,11 @@ class DrupalLoader implements LoaderInterface
 
             $route = new Route('/'. implode('/', $parts));
 
-            // Flag this request as Drupal answerable.
-            $route->setDefault('_drupal', true);
+            // Flag this request as Drupal answerable and set the callback.
+            $route->setDefaults(array(
+                '_drupal' => true,
+                '_controller' => $router_item['page callback'],
+            ));
 
             // Special compiler class allows Drupal routes to have optional parameters.
             $route->setOption('compiler_class', 'Bangpound\\Bundle\\DrupalBundle\\Routing\\RouteCompiler');

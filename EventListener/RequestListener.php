@@ -38,8 +38,6 @@ class RequestListener
                 require_once DRUPAL_ROOT . '/' . $router_item['include_file'];
             }
 
-            $request->attributes->set('_controller', $router_item['page_callback']);
-            $request->attributes->set('_arguments', $router_item['page_arguments']);
             $request->attributes->set('_router_item', $router_item);
         }
     }
