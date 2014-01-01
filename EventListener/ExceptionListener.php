@@ -12,6 +12,9 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
  */
 class ExceptionListener
 {
+    /**
+     * @var ContainerInterface
+     */
     private $container;
 
     /**

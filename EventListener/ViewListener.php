@@ -12,6 +12,9 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
  */
 class ViewListener
 {
+    /**
+     * @var ContainerInterface
+     */
     private $container;
 
     /**
