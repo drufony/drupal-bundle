@@ -23,22 +23,12 @@ class RequestListener
     {
         $request = $event->getRequest();
         if ($request->attributes->get('_drupal', false)) {
-            if ('/' == $request->getPathInfo()) {
-                $_GET['q'] = variable_get('site_frontpage', 'node');
-            } else {
-                $_GET['q'] = urldecode(substr($request->getPathInfo(), 1));
-            }
-            $router_item = menu_get_item();
-
+            $router_item = $request->attributes->get('_router_item', false);
             if (!$router_item['access']) {
                 throw new AccessDeniedHttpException;
-            }
-
-            if (isset($router_item['include_file']) && !empty($router_item['include_file'])) {
+            } elseif ($router_item['include_file']) {
                 require_once DRUPAL_ROOT . '/' . $router_item['include_file'];
             }
-
-            $request->attributes->set('_router_item', $router_item);
         }
     }
 }

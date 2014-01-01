@@ -3,6 +3,7 @@ parameters:
     bangpound_drupal.controller_resolver.class: Bangpound\Bundle\DrupalBundle\Controller\ControllerResolver
     bangpound_drupal.response.class: Symfony\Component\HttpFoundation\Response
     bangpound_drupal.listener.request.class: Bangpound\Bundle\DrupalBundle\EventListener\RequestListener
+    bangpound_drupal.listener.path.class: Bangpound\Bundle\DrupalBundle\EventListener\PathListener
     bangpound_drupal.listener.view.class: Bangpound\Bundle\DrupalBundle\EventListener\ViewListener
     bangpound_drupal.listener.exception.class: Bangpound\Bundle\DrupalBundle\EventListener\ExceptionListener
     bangpound_drupal.routing_loader.class: Bangpound\Bundle\DrupalBundle\Routing\DrupalLoader
@@ -13,6 +14,11 @@ parameters:
 services:
     bangpound_drupal.response:
         class: %bangpound_drupal.response.class%
+
+    bangpound_drupal.listener.path:
+        class: %bangpound_drupal.listener.path.class%
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 200 }
 
     bangpound_drupal.listener.request:
         class: %bangpound_drupal.listener.request.class%

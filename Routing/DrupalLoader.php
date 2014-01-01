@@ -65,14 +65,6 @@ class DrupalLoader implements LoaderInterface
             $routes->add($router_item['path'], $route);
         }
 
-        // Create route for the Drupal home page.
-        $router_item = menu_get_item(variable_get('site_homepage', 'node'));
-        $route = new Route('/', array(
-            '_drupal' => true,
-            '_controller' => $router_item['page_callback'],
-        ));
-        $routes->add('site_frontpage', $route);
-
         $this->loaded = true;
 
         return $routes;
