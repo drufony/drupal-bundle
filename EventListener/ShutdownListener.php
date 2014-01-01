@@ -5,6 +5,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Bangpound\Bundle\DrupalBundle\HttpKernel\ShutdownableInterface;
@@ -65,6 +66,19 @@ class ShutdownListener implements ContainerAwareInterface
      * @param KernelEvent $event
      */
     public function onKernelPostController(KernelEvent $event)
+    {
+        if ($event->getRequest()->attributes->get('_drupal', false)) {
+            $this->shutdown = false;
+        }
+    }
+
+    /**
+     * All kernel events after KernelEvents::CONTROLLER should remind the shutdown
+     * controller that it is not needed because the request is being handled correctly.
+     *
+     * @param PostResponseEvent $event
+     */
+    public function onKernelTerminate(PostResponseEvent $event)
     {
         if ($event->getRequest()->attributes->get('_drupal', false)) {
             $this->shutdown = false;

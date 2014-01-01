@@ -48,7 +48,8 @@ services:
             - { name: kernel.event_listener, event: kernel.controller, method: onKernelController, priority: 512 }
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelPostController, priority: 512 }
             - { name: kernel.event_listener, event: kernel.response, method: onKernelPostController, priority: 512 }
-            - { name: kernel.event_listener, event: kernel.terminate, method: onKernelPostController, priority: 512 }
+            - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate, priority: 512 }
+            - { name: kernel.event_listener, event: kernel.finish_request, method: onKernelPostController, priority: 512 }
 
     bangpound_drupal.routing_loader:
         class: %bangpound_drupal.routing_loader.class%
