@@ -12,13 +12,17 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class RequestListener
 {
 
-  /**
-   * This method is based on menu_execute_active_handler() which is called
-   * in Drupal 7's front controller (index.php).
-   *
-   * @param GetResponseEvent $event
-   * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
-   */
+    /**
+     * This method is based on menu_execute_active_handler() which is called
+     * in Drupal 7's front controller (index.php).
+     *
+     * @param GetResponseEvent $event
+     *
+     * @throws AccessDeniedHttpException if the Drupal route is prohibited for
+     *                                   logged in user.
+     *
+     * @see menu_execute_active_handler() for analogous function.
+     */
     public function onKernelRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
