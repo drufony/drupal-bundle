@@ -8,6 +8,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Bangpound\Bundle\DrupalBundle\HttpKernel\ShutdownableInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -76,13 +77,15 @@ class ShutdownListener implements ContainerAwareInterface
      */
     public function shutdownFunction()
     {
-        if ($this->shutdown) {
+        /** @var RequestStack $request_stack */
+        $request_stack = $this->container->get('request_stack');
+        $request = $request_stack->getCurrentRequest();
+        if ($request && $this->shutdown && $request->attributes->get('_drupal', false)) {
             /**
              * @var Request               $request
              * @var Response              $response
              * @var ShutdownableInterface $kernel
              */
-            $request  = $this->container->get('request_stack')->getCurrentRequest();
             $response = $this->container->get('bangpound_drupal.response');
             $kernel   = $this->container->get('http_kernel');
 
