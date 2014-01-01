@@ -8,6 +8,43 @@
  */
 
 /**
+ * Initializes the $user object for the user associated with the session.
+ *
+ * @param $uid
+ *   The user ID from the session.
+ *
+ * @return
+ *   The user.
+ */
+function _drupal_session_read_user($uid) {
+  $user = db_query("SELECT * FROM {users} u WHERE u.uid = :uid", array(':uid' => $uid))->fetchObject();
+
+  // We found the client's session record and they are an authenticated,
+  // active user.
+  if ($user && $user->uid > 0 && $user->status == 1) {
+    // This is done to unserialize the data member of $user.
+    $user->data = unserialize($user->data);
+
+    // Add roles element to $user.
+    $user->roles = array();
+    $user->roles[DRUPAL_AUTHENTICATED_RID] = 'authenticated user';
+    $user->roles += db_query("SELECT r.rid, r.name FROM {role} r INNER JOIN {users_roles} ur ON ur.rid = r.rid WHERE ur.uid = :uid", array(':uid' => $user->uid))->fetchAllKeyed(0, 1);
+  }
+  else if ($user) {
+    // The user is anonymous or blocked. Only preserve two fields from the
+    // {sessions} table.
+    $account = drupal_anonymous_user();
+    $user = $account;
+  }
+  else {
+    // The session has expired.
+    $user = drupal_anonymous_user();
+  }
+
+  return $user;
+}
+
+/**
  * Initializes the session handler, starting a session if needed.
  */
 function drupal_session_initialize() {
@@ -16,14 +53,12 @@ function drupal_session_initialize() {
   $session = $GLOBALS['session'];
 
   drupal_session_start();
+
+  $uid = $session->get('drupal_uid', 0);
+  $user = _drupal_session_read_user($uid);
+
   if (!empty($user->uid) || !empty($_SESSION)) {
     drupal_page_is_cacheable(FALSE);
-  }
-  if (0 === $session->get('drupal_uid', 0)) {
-    $user = drupal_anonymous_user();
-  }
-  else {
-    $user = db_query("SELECT * FROM {users} u WHERE u.uid = :uid", array(':uid' => $session->get('drupal_uid', 0)))->fetchObject();
   }
   date_default_timezone_set(drupal_get_user_timezone());
 }
