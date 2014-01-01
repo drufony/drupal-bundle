@@ -5,6 +5,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
@@ -56,6 +57,33 @@ class ShutdownListener implements ContainerAwareInterface
             $this->shutdown = true;
             $this->requestType = $event->getRequestType();
             drupal_register_shutdown_function([$this, 'shutdownFunction']);
+        }
+    }
+
+    /**
+     * Shutdown handler for exceptions
+     *
+     * An access denied or not found exception might be thrown early, and those
+     * should be handled the same way as if the controller exited.
+     *
+     * @param GetResponseForExceptionEvent $event
+     */
+    public function onKernelException(GetResponseForExceptionEvent $event)
+    {
+        if (!$this->shutdown) {
+            $exception = $event->getException();
+            if (is_a($exception, 'Symfony\\Component\\HttpKernel\\Exception\\AccessDeniedHttpException') ||
+                is_a($exception, 'Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException'))
+            {
+                $request = $event->getRequest();
+                $request->attributes->set('_drupal', true);
+                $this->shutdown = true;
+                $this->requestType = $event->getRequestType();
+                drupal_register_shutdown_function([$this, 'shutdownFunction']);
+            }
+        }
+        else if ($event->getRequest()->attributes->get('_drupal', false) && $this->shutdown) {
+            $this->shutdown = false;
         }
     }
 
