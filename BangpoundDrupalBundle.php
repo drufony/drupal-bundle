@@ -48,6 +48,9 @@ class BangpoundDrupalBundle extends Bundle
         drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL, TRUE, $this->container->getParameter('bangpound_drupal.bootstrap.class'));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
