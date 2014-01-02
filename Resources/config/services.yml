@@ -10,6 +10,7 @@ parameters:
     bangpound_drupal.listener.shutdown.class: Bangpound\Bundle\DrupalBundle\EventListener\ShutdownListener
     bangpound_drupal.globals.class: Bangpound\Bundle\DrupalBundle\Globals
     bangpound_drupal.bootstrap.class: Bangpound\Bundle\DrupalBundle\Bootstrap
+    bangpound_drupal.conf.session_inc: sites/all/modules/symfony-module/session.inc
 
 services:
     bangpound_drupal.response:
@@ -62,3 +63,4 @@ services:
             - [ 'offsetSet', ['response', @bangpound_drupal.response ] ]
             - [ 'offsetSet', ['logger', @logger ] ]
             - [ 'offsetSet', ['session', @session ] ]
+            - [ 'offsetSet', ['service_container', @service_container ] ]

@@ -87,12 +87,12 @@ class Bootstrap extends AutoloadBootstrap
             $base_insecure_url = str_replace('https://', 'http://', $base_url);
         };
 
-        $this[DRUPAL_BOOTSTRAP_SESSION] = function () {
-            /** @var \Symfony\Component\HttpKernel\Kernel $kernel */
-            $kernel = $GLOBALS['kernel'];
-            require_once $kernel->getBundle('BangpoundDrupalBundle')->getPath() .'/Resources/handler/session.inc';
-            drupal_session_initialize();
-        };
+        $this[DRUPAL_BOOTSTRAP_VARIABLES] = $this->extend(DRUPAL_BOOTSTRAP_VARIABLES, function () {
+            /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
+            $container = $GLOBALS['service_container'];
+
+            $GLOBALS['conf']['session_inc'] = $container->getParameter('bangpound_drupal.conf.session_inc');
+        });
 
         $this[DRUPAL_BOOTSTRAP_PAGE_CACHE] = function () {
             // Allow specifying special cache handlers in settings.php, like
