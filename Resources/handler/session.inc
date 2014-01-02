@@ -151,6 +151,14 @@ function drupal_session_regenerate() {
   if (drupal_session_started()) {
     $session->migrate();
   }
+  else {
+    // Start the session when it doesn't exist yet.
+    // Preserve the logged in user, as it will be reset to anonymous
+    // by _drupal_session_read.
+    $account = $user;
+    drupal_session_start();
+    $user = $account;
+  }
   date_default_timezone_set(drupal_get_user_timezone());
 }
 
