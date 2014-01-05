@@ -5,7 +5,6 @@ parameters:
     bangpound_drupal.listener.request.class: Bangpound\Bundle\DrupalBundle\EventListener\RequestListener
     bangpound_drupal.listener.path.class: Bangpound\Bundle\DrupalBundle\EventListener\PathListener
     bangpound_drupal.listener.view.class: Bangpound\Bundle\DrupalBundle\EventListener\ViewListener
-    bangpound_drupal.listener.exception.class: Bangpound\Bundle\DrupalBundle\EventListener\ExceptionListener
     bangpound_drupal.routing_loader.class: Bangpound\Bundle\DrupalBundle\Routing\DrupalLoader
     bangpound_drupal.listener.shutdown.class: Bangpound\Bundle\DrupalBundle\EventListener\ShutdownListener
     bangpound_drupal.globals.class: Bangpound\Bundle\DrupalBundle\Globals
@@ -32,13 +31,6 @@ services:
             - [ 'setContainer', [ @service_container ] ]
         tags:
             - { name: kernel.event_listener, event: kernel.view, method: onKernelView }
-
-    bangpound_drupal.listener.exception:
-        class: %bangpound_drupal.listener.exception.class%
-        calls:
-            - [ 'setContainer', [ @service_container ] ]
-        tags:
-            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 
     bangpound_drupal.listener.shutdown:
         class: %bangpound_drupal.listener.shutdown.class%
