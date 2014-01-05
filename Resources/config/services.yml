@@ -53,6 +53,5 @@ services:
         class: %bangpound_drupal.globals.class%
         calls:
             - [ 'offsetSet', ['response', @bangpound_drupal.response ] ]
-            - [ 'offsetSet', ['logger', @logger ] ]
             - [ 'offsetSet', ['session', @session ] ]
             - [ 'offsetSet', ['service_container', @service_container ] ]
