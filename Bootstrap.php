@@ -3,7 +3,6 @@
 namespace Bangpound\Bundle\DrupalBundle;
 
 use Bangpound\Drupal\Bootstrap\AutoloadBootstrap;
-use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Class Bootstrap
