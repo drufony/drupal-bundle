@@ -103,5 +103,13 @@ class Bootstrap extends AutoloadBootstrap
             }
             drupal_block_denied(ip_address());
         };
+
+        $this[DRUPAL_BOOTSTRAP_PAGE_HEADER] = function () {
+            bootstrap_invoke_all('boot');
+
+            if (!drupal_is_cli()) {
+                drupal_page_header();
+            }
+        };
     }
 }
