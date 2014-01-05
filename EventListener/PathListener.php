@@ -28,22 +28,17 @@ class PathListener
         // it even though it's very un-Symfony.
         $_GET['q'] = drupal_get_normal_path($path);
 
-        $router_item = menu_get_item();
+        if (!$request->attributes->get('_drupal', false)) {
+            $router_item = menu_get_item();
+            if ($router_item) {
 
-        if ($request->attributes->get('_drupal', false)) {
-
-            // The requested path is an unalaised Drupal route.
-            $request->attributes->set('_router_item', $router_item);
-
-        } elseif ($router_item) {
-
-            // The requested path is an unalaised Drupal route.
-            $request->attributes->add(array(
-                '_drupal' => true,
-                '_controller' => $router_item['page_callback'],
-                '_router_item' => $router_item,
-                '_route' => $router_item['path'],
-            ));
+                // The requested path is an unalaised Drupal route.
+                $request->attributes->add(array(
+                    '_drupal' => true,
+                    '_controller' => $router_item['page_callback'],
+                    '_route' => $router_item['path'],
+                ));
+            }
         }
     }
 }

@@ -27,7 +27,13 @@ class RequestListener
     {
         $request = $event->getRequest();
         if ($request->attributes->get('_drupal', false)) {
-            $router_item = $request->attributes->get('_router_item', false);
+
+            // User has not been loaded by Symfony yet, so the access control is
+            // invalid and must be re-checked.
+            drupal_static_reset('menu_get_item');
+
+            $router_item = menu_get_item();
+            $request->attributes->set('_router_item', $router_item);
             if (!$router_item['access']) {
                 throw new AccessDeniedHttpException;
             } elseif ($router_item['include_file']) {

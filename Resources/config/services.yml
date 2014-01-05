@@ -9,11 +9,21 @@ parameters:
     bangpound_drupal.listener.shutdown.class: Bangpound\Bundle\DrupalBundle\EventListener\ShutdownListener
     bangpound_drupal.globals.class: Bangpound\Bundle\DrupalBundle\Globals
     bangpound_drupal.bootstrap.class: Bangpound\Bundle\DrupalBundle\Bootstrap
+    bangpound_drupal.handler.session.class: Bangpound\Bundle\DrupalBundle\DrupalSessionHandler
+    bangpound_drupal.user_provider.class: Bangpound\Bundle\DrupalBundle\Security\User\UserProvider
+    bangpound_drupal.encoder.class: Bangpound\Bundle\DrupalBundle\Security\Encoder\PasswordEncoder
+    bangpound_drupal.listener.user.class: Bangpound\Bundle\DrupalBundle\EventListener\UserListener
     bangpound_drupal.conf.session_inc: sites/all/modules/symfony-module/session.inc
 
 services:
     bangpound_drupal.response:
         class: %bangpound_drupal.response.class%
+
+    bangpound_drupal.listener.user:
+        class: %bangpound_drupal.listener.user.class%
+        arguments: [ @security.context ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 32 }
 
     bangpound_drupal.listener.path:
         class: %bangpound_drupal.listener.path.class%
@@ -49,9 +59,19 @@ services:
         tags:
             - { name: routing.loader }
 
+    bangpound_drupal.handler.session:
+        class: %bangpound_drupal.handler.session.class%
+        arguments: [ @session.handler.native_file ]
+
     bangpound_drupal.globals:
         class: %bangpound_drupal.globals.class%
         calls:
             - [ 'offsetSet', ['response', @bangpound_drupal.response ] ]
             - [ 'offsetSet', ['session', @session ] ]
             - [ 'offsetSet', ['service_container', @service_container ] ]
+
+    bangpound_drupal.user_provider:
+        class: %bangpound_drupal.user_provider.class%
+
+    bangpound_drupal.encoder:
+        class: %bangpound_drupal.encoder.class%
