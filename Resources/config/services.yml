@@ -81,4 +81,3 @@ services:
         class: %bangpound_drupal.listener.authentication.class%
         tags:
             - { name: kernel.event_listener, event: security.authentication.failure, method: onAuthenticationFailure }
-            - { name: kernel.event_listener, event: security.authentication.success, method: onAuthenticationSuccess }
