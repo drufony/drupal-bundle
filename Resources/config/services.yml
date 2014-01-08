@@ -15,6 +15,7 @@ parameters:
     bangpound_drupal.listener.user.class: Bangpound\Bundle\DrupalBundle\EventListener\UserListener
     bangpound_drupal.listener.authentication.class: Bangpound\Bundle\DrupalBundle\EventListener\AuthenticationListener
     bangpound_drupal.conf.session_inc: sites/all/modules/symfony-module/session.inc
+    bangpound_drupal.conf.mail_system.default_system: Bangpound\Bundle\DrupalBundle\SwiftMailSystem
 
 services:
     bangpound_drupal.response:

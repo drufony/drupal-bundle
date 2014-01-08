@@ -91,6 +91,7 @@ class Bootstrap extends AutoloadBootstrap
             $container = $GLOBALS['service_container'];
 
             $GLOBALS['conf']['session_inc'] = $container->getParameter('bangpound_drupal.conf.session_inc');
+            $GLOBALS['conf']['mail_system']['default-system'] = $container->getParameter('bangpound_drupal.conf.mail_system.default_system');
         });
 
         $this[DRUPAL_BOOTSTRAP_PAGE_CACHE] = function () {
