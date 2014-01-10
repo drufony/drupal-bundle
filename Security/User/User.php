@@ -78,7 +78,18 @@ class User implements AdvancedUserInterface, \Serializable
      */
     public function unserialize($serialized)
     {
-        $this->user = user_load($serialized);
+        $account = db_query("SELECT * FROM {users} WHERE uid = :uid", array(':uid' => $serialized))->fetchObject();
+        if ($account) {
+
+            // This is done to unserialize the data member of $user.
+            $account->data = unserialize($account->data);
+
+            // Add roles element to $user.
+            $account->roles = array();
+            $account->roles[DRUPAL_AUTHENTICATED_RID] = 'authenticated user';
+            $account->roles += db_query("SELECT r.rid, r.name FROM {role} r INNER JOIN {users_roles} ur ON ur.rid = r.rid WHERE ur.uid = :uid", array(':uid' => $account->uid))->fetchAllKeyed(0, 1);
+        }
+        $this->user = $account;
     }
 
     /**

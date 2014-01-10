@@ -14,9 +14,18 @@ class UserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
-        $entity = user_load_by_name($username);
-        if ($entity) {
-            return new User($entity);
+        $account = db_query("SELECT * FROM {users} WHERE name = :name", array(':name' => $username))->fetchObject();
+        if ($account) {
+
+            // This is done to unserialize the data member of $user.
+            $account->data = unserialize($account->data);
+
+            // Add roles element to $user.
+            $account->roles = array();
+            $account->roles[DRUPAL_AUTHENTICATED_RID] = 'authenticated user';
+            $account->roles += db_query("SELECT r.rid, r.name FROM {role} r INNER JOIN {users_roles} ur ON ur.rid = r.rid WHERE ur.uid = :uid", array(':uid' => $account->uid))->fetchAllKeyed(0, 1);
+
+            return new User($account);
         }
         throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
     }
