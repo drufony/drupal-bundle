@@ -1,0 +1,9 @@
+{% extends 'BangpoundDrupalBundle::layout.html.twig' %}
+
+{% block title %}
+    {{ label }}
+{% endblock %}
+
+{% block content %}
+    {{ drupal_render('content') }}
+{% endblock %}

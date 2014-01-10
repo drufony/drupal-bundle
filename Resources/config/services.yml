@@ -18,6 +18,7 @@ parameters:
     bangpound_drupal.listener.authentication.class: Bangpound\Bundle\DrupalBundle\EventListener\AuthenticationListener
     bangpound_drupal.conf.session_inc: sites/all/modules/symfony-module/session.inc
     bangpound_drupal.conf.mail_system.default_system: Bangpound\Bundle\DrupalBundle\SwiftMailSystem
+    bangpound_drupal.converter.drupal_entity.class: Bangpound\Bundle\DrupalBundle\ParamConverter\EntityParamConverter
 
 services:
     bangpound_drupal.response:
@@ -94,3 +95,8 @@ services:
         class: %bangpound_drupal.listener.authentication.class%
         tags:
             - { name: kernel.event_listener, event: security.authentication.failure, method: onAuthenticationFailure }
+
+    bangpound_drupal.converter.drupal_entity:
+        class: %bangpound_drupal.converter.drupal_entity.class%
+        tags:
+            - { name: request.param_converter, converter: drupal.entity }

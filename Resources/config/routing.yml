@@ -1,3 +1,7 @@
 bangpound_drupal:
     resource: .
     type: drupal
+
+bangpound_drupal_entity:
+    resource: "@BangpoundDrupalBundle/Controller/EntityController.php"
+    type:     annotation
