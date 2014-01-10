@@ -14,6 +14,11 @@ class DrupalLoader implements LoaderInterface
 {
     private $loaded = false;
 
+    public function __construct()
+    {
+        drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+    }
+
     /**
      * Loads a resource.
      *
