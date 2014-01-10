@@ -14,7 +14,6 @@ class User implements AdvancedUserInterface, \Serializable
     public function __construct(\stdClass $user)
     {
         $this->user = $user;
-        require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
     }
 
     /**
