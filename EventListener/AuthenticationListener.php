@@ -23,7 +23,7 @@ class AuthenticationListener
     }
 
     /**
-     * @param AuthenticationFailureEvent $event
+     * @param AuthenticationFailureEvent $event Authentication failure event
      */
     public function onAuthenticationFailure(AuthenticationFailureEvent $event)
     {
