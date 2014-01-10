@@ -98,6 +98,13 @@ class Bootstrap extends AutoloadBootstrap
             $GLOBALS['conf']['mail_system']['default-system'] = $container->getParameter('bangpound_drupal.conf.mail_system.default_system');
         });
 
+        $this[DRUPAL_BOOTSTRAP_SESSION] = $this->extend(DRUPAL_BOOTSTRAP_SESSION, function () {
+            if (empty($GLOBALS['user'])) {
+                $GLOBALS['user'] = drupal_anonymous_user();
+                date_default_timezone_set(drupal_get_user_timezone());
+            }
+        });
+
         $this[DRUPAL_BOOTSTRAP_PAGE_CACHE] = function () {
             // Allow specifying special cache handlers in settings.php, like
             // using memcached or files for storing cache information.
