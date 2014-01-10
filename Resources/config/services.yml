@@ -1,26 +1,42 @@
 parameters:
-    bangpound_drupal.http_kernel.class: Bangpound\Bundle\DrupalBundle\DependencyInjection\ContainerAwareLegacyPhpHttpKernel
+
+#   Fundamental HttpKernel components that turn Drupal page callbacks into Symfony controllers.
+    bangpound_drupal.http_kernel.class:         Bangpound\Bundle\DrupalBundle\DependencyInjection\ContainerAwareLegacyPhpHttpKernel
     bangpound_drupal.controller_resolver.class: Bangpound\Bundle\DrupalBundle\Controller\ControllerResolver
-    bangpound_drupal.response.class: Symfony\Component\HttpFoundation\Response
-    bangpound_drupal.listener.request.class: Bangpound\Bundle\DrupalBundle\EventListener\RequestListener
-    bangpound_drupal.listener.path.class: Bangpound\Bundle\DrupalBundle\EventListener\PathListener
-    bangpound_drupal.listener.view.class: Bangpound\Bundle\DrupalBundle\EventListener\ViewListener
-    bangpound_drupal.routing_loader.class: Bangpound\Bundle\DrupalBundle\Routing\DrupalLoader
-    bangpound_drupal.listener.shutdown.class: Bangpound\Bundle\DrupalBundle\EventListener\ShutdownListener
-    bangpound_drupal.globals.class: Bangpound\Bundle\DrupalBundle\Globals
+    bangpound_drupal.routing_loader.class:      Bangpound\Bundle\DrupalBundle\Routing\DrupalLoader
+
     bangpound_drupal.bootstrap.class: Bangpound\Bundle\DrupalBundle\Bootstrap
+    bangpound_drupal.response.class:  Symfony\Component\HttpFoundation\Response
+    bangpound_drupal.globals.class:   Bangpound\Bundle\DrupalBundle\Globals
+
+#   Bootstrap listener coordinates Drupal bootstrap during the kernel.request event.
     bangpound_drupal.listener.bootstrap.class: Bangpound\Bundle\DrupalBundle\EventListener\BootstrapListener
+
+#   Request, View and Shutdown listener integrate Symfony and Drupal 7.
+    bangpound_drupal.listener.request.class: Bangpound\Bundle\DrupalBundle\EventListener\RequestListener
+    bangpound_drupal.listener.view.class: Bangpound\Bundle\DrupalBundle\EventListener\ViewListener
+    bangpound_drupal.listener.shutdown.class: Bangpound\Bundle\DrupalBundle\EventListener\ShutdownListener
+
+#   Drupal users authenticate as Symfony users and are part of sessions.
     bangpound_drupal.handler.session.class: Bangpound\Bundle\DrupalBundle\DrupalSessionHandler
     bangpound_drupal.user_provider.class: Bangpound\Bundle\DrupalBundle\Security\User\UserProvider
     bangpound_drupal.encoder.class: Bangpound\Bundle\DrupalBundle\Security\Encoder\PasswordEncoder
+
+#   These events and functions trigger the Drupal module API because the Drupal submit handlers are completely
+#   irrelevant.
+    bangpound_drupal.listener.authentication.class: Bangpound\Bundle\DrupalBundle\EventListener\AuthenticationListener
+    bangpound_drupal.logout.handler.class: Bangpound\Bundle\DrupalBundle\Security\LogoutHandler
+
+#   Twig extensions to replicate Drupal 7 render and theme functions.
     bangpound_drupal.twig.render_extension.class: Bangpound\Bundle\DrupalBundle\Twig\RenderExtension
     bangpound_drupal.twig.theme_extension.class: Bangpound\Bundle\DrupalBundle\Twig\ThemeExtension
-    bangpound_drupal.listener.user.class: Bangpound\Bundle\DrupalBundle\EventListener\UserListener
-    bangpound_drupal.listener.authentication.class: Bangpound\Bundle\DrupalBundle\EventListener\AuthenticationListener
+
+#   Pluggable parts of Drupal that are replaced by Symfony components.
     bangpound_drupal.conf.session_inc: sites/all/modules/symfony-module/session.inc
     bangpound_drupal.conf.mail_system.default_system: Bangpound\Bundle\DrupalBundle\SwiftMailSystem
+
+#   Controller parameter converter for Entities.
     bangpound_drupal.converter.drupal_entity.class: Bangpound\Bundle\DrupalBundle\ParamConverter\EntityParamConverter
-    bangpound_drupal.logout.handler.class: Bangpound\Bundle\DrupalBundle\Security\LogoutHandler
     bangpound_drupal.database.data_collector.class: Bangpound\Bundle\DrupalBundle\DataCollector\DrupalDatabaseDataCollector
 
 services:
