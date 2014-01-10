@@ -1,0 +1,7 @@
+{% extends 'BangpoundDrupalBundle::layout.html.twig' %}
+
+{% block title %}{% if title is defined %}{{ title | raw }}{% endif %}{% endblock %}
+
+{% block content -%}
+    {% if content is defined %}{{ drupal_render('content') }}{% endif %}
+{%- endblock %}
