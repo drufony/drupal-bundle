@@ -87,6 +87,10 @@ class Bootstrap extends AutoloadBootstrap
         };
 
         $this[DRUPAL_BOOTSTRAP_VARIABLES] = $this->extend(DRUPAL_BOOTSTRAP_VARIABLES, function () {
+            if (!isset($GLOBALS['service_container'])) {
+                return;
+            }
+
             /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
             $container = $GLOBALS['service_container'];
 
