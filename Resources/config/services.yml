@@ -93,8 +93,10 @@ services:
 
     bangpound_drupal.listener.authentication:
         class: %bangpound_drupal.listener.authentication.class%
+        arguments: [ @request_stack ]
         tags:
             - { name: kernel.event_listener, event: security.authentication.failure, method: onAuthenticationFailure }
+            - { name: kernel.event_listener, event: security.authentication.success, method: onAuthenticationSuccess }
 
     bangpound_drupal.converter.drupal_entity:
         class: %bangpound_drupal.converter.drupal_entity.class%
