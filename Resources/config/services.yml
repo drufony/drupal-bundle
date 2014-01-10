@@ -9,6 +9,7 @@ parameters:
     bangpound_drupal.listener.shutdown.class: Bangpound\Bundle\DrupalBundle\EventListener\ShutdownListener
     bangpound_drupal.globals.class: Bangpound\Bundle\DrupalBundle\Globals
     bangpound_drupal.bootstrap.class: Bangpound\Bundle\DrupalBundle\Bootstrap
+    bangpound_drupal.listener.bootstrap.class: Bangpound\Bundle\DrupalBundle\EventListener\BootstrapListener
     bangpound_drupal.handler.session.class: Bangpound\Bundle\DrupalBundle\DrupalSessionHandler
     bangpound_drupal.user_provider.class: Bangpound\Bundle\DrupalBundle\Security\User\UserProvider
     bangpound_drupal.encoder.class: Bangpound\Bundle\DrupalBundle\Security\Encoder\PasswordEncoder
@@ -26,16 +27,18 @@ services:
     bangpound_drupal.response:
         class: %bangpound_drupal.response.class%
 
-    bangpound_drupal.listener.user:
-        class: %bangpound_drupal.listener.user.class%
-        arguments: [ @security.context ]
+    bangpound_drupal.listener.bootstrap:
+        class: %bangpound_drupal.listener.bootstrap.class%
+        arguments: [ @bangpound_drupal.globals ]
+        calls:
+            - [ 'setContainer', [ @service_container ] ]
         tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 32 }
-
-    bangpound_drupal.listener.path:
-        class: %bangpound_drupal.listener.path.class%
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 200 }
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestEarly, priority: 512 }
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestBeforeSession, priority: 129 }
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestAfterSession, priority: 127 }
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestBeforeRouter, priority: 33 }
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestAfterLocale, priority: 15 }
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestAfterFirewall, priority: 7 }
 
     bangpound_drupal.listener.request:
         class: %bangpound_drupal.listener.request.class%
