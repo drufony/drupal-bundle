@@ -109,8 +109,3 @@ services:
         class: %bangpound_drupal.converter.drupal_entity.class%
         tags:
             - { name: request.param_converter, converter: drupal.entity }
-
-    bangpound_drupal.database.data_collector:
-        class: %bangpound_drupal.database.data_collector.class%
-        tags:
-            - { name: data_collector, template: "BangpoundDrupalBundle:Collector:db", id: "drupal_db" }
