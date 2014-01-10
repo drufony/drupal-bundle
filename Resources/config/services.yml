@@ -20,6 +20,7 @@ parameters:
     bangpound_drupal.conf.mail_system.default_system: Bangpound\Bundle\DrupalBundle\SwiftMailSystem
     bangpound_drupal.converter.drupal_entity.class: Bangpound\Bundle\DrupalBundle\ParamConverter\EntityParamConverter
     bangpound_drupal.logout.handler.class: Bangpound\Bundle\DrupalBundle\Security\LogoutHandler
+    bangpound_drupal.database.data_collector.class: Bangpound\Bundle\DrupalBundle\DataCollector\DrupalDatabaseDataCollector
 
 services:
     bangpound_drupal.response:
@@ -106,3 +107,8 @@ services:
         class: %bangpound_drupal.converter.drupal_entity.class%
         tags:
             - { name: request.param_converter, converter: drupal.entity }
+
+    bangpound_drupal.database.data_collector:
+        class: %bangpound_drupal.database.data_collector.class%
+        tags:
+            - { name: data_collector, template: "BangpoundDrupalBundle:Collector:db", id: "drupal_db" }
