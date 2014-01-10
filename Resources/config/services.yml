@@ -19,6 +19,7 @@ parameters:
     bangpound_drupal.conf.session_inc: sites/all/modules/symfony-module/session.inc
     bangpound_drupal.conf.mail_system.default_system: Bangpound\Bundle\DrupalBundle\SwiftMailSystem
     bangpound_drupal.converter.drupal_entity.class: Bangpound\Bundle\DrupalBundle\ParamConverter\EntityParamConverter
+    bangpound_drupal.logout.handler.class: Bangpound\Bundle\DrupalBundle\Security\LogoutHandler
 
 services:
     bangpound_drupal.response:
@@ -97,6 +98,9 @@ services:
         tags:
             - { name: kernel.event_listener, event: security.authentication.failure, method: onAuthenticationFailure }
             - { name: kernel.event_listener, event: security.authentication.success, method: onAuthenticationSuccess }
+
+    bangpound_drupal.logout.handler:
+        class: %bangpound_drupal.logout.handler.class%
 
     bangpound_drupal.converter.drupal_entity:
         class: %bangpound_drupal.converter.drupal_entity.class%
