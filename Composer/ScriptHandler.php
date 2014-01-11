@@ -26,7 +26,6 @@ class ScriptHandler
             'includes',
             'misc',
             'modules',
-            'profiles',
             'themes',
         );
 
