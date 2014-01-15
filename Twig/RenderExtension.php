@@ -30,6 +30,7 @@ class RenderExtension extends \Twig_Extension
             new \Twig_SimpleFunction('drupal_render', array($this, 'render'), array('is_safe' => array('html'), 'needs_context' => true)),
             new \Twig_SimpleFunction('drupal_hide', array($this, 'hide'), array('needs_context' => true)),
             new \Twig_SimpleFunction('drupal_show', array($this, 'show'), array('needs_context' => true)),
+            new \Twig_SimpleFunction('field_view_values', array($this, 'field_view_values'), array('is_safe' => array('html'))),
         );
     }
 
@@ -39,6 +40,19 @@ class RenderExtension extends \Twig_Extension
     public function getName()
     {
         return 'drupal_render_extension';
+    }
+
+    public function field_view_values($entity_type, $entity, $field_name, $display = array(), $langcode = NULL)
+    {
+        $items = field_get_items($entity_type, $entity, $field_name);
+        if ($items) {
+            $output = array();
+            foreach ($items as $item) {
+                $output[] = field_view_value($entity_type, $entity, $field_name, $item, $display, $langcode);
+            }
+
+            return $output;
+        }
     }
 
     /**
