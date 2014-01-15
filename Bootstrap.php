@@ -82,6 +82,8 @@ class Bootstrap extends AutoloadBootstrap
             // We do not mess with cookie or session settings in Drupal at all.
         });
 
+        // DRUPAL_BOOTSTRAP_PAGE_CACHE only loads the cache handler.
+
         $this[DRUPAL_BOOTSTRAP_PAGE_CACHE] = $this->share(function () {
             // Allow specifying special cache handlers in settings.php, like
             // using memcached or files for storing cache information.
