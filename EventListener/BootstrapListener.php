@@ -6,11 +6,18 @@ use Bangpound\Bundle\DrupalBundle\Globals;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
+/**
+ * Class BootstrapListener
+ * @package Bangpound\Bundle\DrupalBundle\EventListener
+ */
 class BootstrapListener extends ContainerAware
 {
     // This looks dumb.
     private $globalz;
 
+    /**
+     * @param \Bangpound\Bundle\DrupalBundle\Globals $globalz
+     */
     public function __construct(Globals $globalz)
     {
         require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
@@ -18,6 +25,11 @@ class BootstrapListener extends ContainerAware
         $this->globalz = $globalz;
     }
 
+    /**
+     * Listener bootstraps Drupal to DRUPAL_BOOTSTRAP_VARIABLES
+     *
+     * @param GetResponseEvent $event
+     */
     public function onKernelRequestEarly(GetResponseEvent $event)
     {
         chdir(DRUPAL_ROOT);
@@ -42,11 +54,21 @@ class BootstrapListener extends ContainerAware
         drupal_bootstrap(DRUPAL_BOOTSTRAP_VARIABLES);
     }
 
+    /**
+     * Listener bootstraps Drupal to DRUPAL_BOOTSTRAP_SESSION
+     *
+     * @param GetResponseEvent $event
+     */
     public function onKernelRequestBeforeSession(GetResponseEvent $event)
     {
         drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
     }
 
+    /**
+     * Listener bootstraps Drupal to DRUPAL_BOOTSTRAP_PAGE_HEADER
+     *
+     * @param GetResponseEvent $event
+     */
     public function onKernelRequestAfterSession(GetResponseEvent $event)
     {
         if (empty($GLOBALS['user'])) {
@@ -58,7 +80,13 @@ class BootstrapListener extends ContainerAware
         drupal_bootstrap(DRUPAL_BOOTSTRAP_PAGE_HEADER);
 
     }
-     public function onKernelRequestBeforeRouter(GetResponseEvent $event)
+
+    /**
+     * Listener searches for URL aliased Drupal paths.
+     *
+     * @param GetResponseEvent $event
+     */
+    public function onKernelRequestBeforeRouter(GetResponseEvent $event)
     {
         drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
@@ -93,11 +121,22 @@ class BootstrapListener extends ContainerAware
         }
     }
 
+    /**
+     * Listener bootstraps Drupal to DRUPAL_BOOTSTRAP_LANGUAGE
+     *
+     * @param GetResponseEvent $event
+     */
     public function onKernelRequestAfterLocale(GetResponseEvent $event)
     {
         drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE);
     }
 
+    /**
+     * Completes the remaining parts of DRUPAL_BOOTSTRAP_FULL that conflict
+     * with the Symfony router.
+     *
+     * @param GetResponseEvent $event
+     */
     public function onKernelRequestAfterFirewall(GetResponseEvent $event)
     {
         // Prior to invoking hook_init(), initialize the theme (potentially a custom
