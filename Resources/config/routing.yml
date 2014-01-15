@@ -1,7 +1,3 @@
-bangpound_drupal:
-    resource: .
-    type: drupal
-
 bangpound_drupal_ctools_content_types:
     resource: "@BangpoundDrupalBundle/Controller/CtoolsContentTypesController.php"
     type:     annotation
@@ -9,3 +5,7 @@ bangpound_drupal_ctools_content_types:
 bangpound_drupal_entity:
     resource: "@BangpoundDrupalBundle/Controller/EntityController.php"
     type:     annotation
+
+bangpound_drupal:
+    resource: .
+    type: drupal
