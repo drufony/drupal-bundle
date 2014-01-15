@@ -8,6 +8,7 @@ parameters:
     bangpound_drupal.bootstrap.class: Bangpound\Bundle\DrupalBundle\Bootstrap
     bangpound_drupal.response.class:  Symfony\Component\HttpFoundation\Response
     bangpound_drupal.globals.class:   Bangpound\Bundle\DrupalBundle\Globals
+    bangpound_drupal.pseudo_kernel.class: Bangpound\Bundle\DrupalBundle\PseudoKernel
 
 #   Bootstrap listener coordinates Drupal bootstrap during the kernel.request event.
     bangpound_drupal.listener.bootstrap.class: Bangpound\Bundle\DrupalBundle\EventListener\BootstrapListener
@@ -45,10 +46,11 @@ services:
 
     bangpound_drupal.listener.bootstrap:
         class: %bangpound_drupal.listener.bootstrap.class%
-        arguments: [ @bangpound_drupal.globals ]
+        arguments: [ @bangpound_drupal.globals, @bangpound_drupal.pseudo_kernel ]
         calls:
             - [ 'setContainer', [ @service_container ] ]
         tags:
+            - { name: kernel.event_listener, event: drupal_bootstrap.pre.configuration, method: onPreConfiguration }
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestEarly, priority: 512 }
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestBeforeSession, priority: 129 }
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestAfterSession, priority: 127 }
@@ -82,6 +84,7 @@ services:
 
     bangpound_drupal.routing_loader:
         class: %bangpound_drupal.routing_loader.class%
+        arguments: [ @bangpound_drupal.pseudo_kernel ]
         tags:
             - { name: routing.loader }
 
@@ -100,6 +103,7 @@ services:
 
     bangpound_drupal.encoder:
         class: %bangpound_drupal.encoder.class%
+        arguments: [ @bangpound_drupal.pseudo_kernel ]
 
     bangpound_drupal.twig.render_extension:
         class: %bangpound_drupal.twig.render_extension.class%
@@ -125,3 +129,18 @@ services:
         class: %bangpound_drupal.converter.drupal_entity.class%
         tags:
             - { name: request.param_converter, converter: drupal.entity }
+
+    bangpound_drupal.bootstrap:
+        class: %bangpound_drupal.bootstrap.class%
+        arguments:
+            - { DRUPAL_ROOT: "%kernel.root_dir%/../web" }
+        calls:
+            - [ setEventDispatcher, [ @event_dispatcher ] ]
+
+    bangpound_drupal.pseudo_kernel:
+        class: %bangpound_drupal.pseudo_kernel.class%
+        arguments: [ %kernel.environment%, %kernel.debug% ]
+        calls:
+            - [ setDrupalRoot, [ "%kernel.root_dir%/../web" ]]
+            - [ setUri, [ %bangpound_drupal.url% ]]
+            - [ setBootstrap, [ @bangpound_drupal.bootstrap ] ]

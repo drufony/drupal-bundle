@@ -3,8 +3,11 @@
 namespace Bangpound\Bundle\DrupalBundle\EventListener;
 
 use Bangpound\Bundle\DrupalBundle\Globals;
+use Bangpound\Bundle\DrupalBundle\PseudoKernel;
 use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Class BootstrapListener
@@ -12,17 +15,35 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  */
 class BootstrapListener extends ContainerAware
 {
-    // This looks dumb.
-    private $globalz;
+    /**
+     * @var PseudoKernel
+     */
+    private $kernel;
 
     /**
      * @param \Bangpound\Bundle\DrupalBundle\Globals $globalz
+     * @param PseudoKernel                           $kernel
      */
-    public function __construct(Globals $globalz)
+    public function __construct(Globals $globalz, PseudoKernel $kernel)
     {
-        require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
+        // Abandon the Globals object. It just needs to be instantiated.
 
-        $this->globalz = $globalz;
+        $this->kernel = $kernel;
+    }
+
+    /**
+     * Listener prepares Drupal bootstrap environment.
+     *
+     * @param Event $event
+     */
+    public function onPreConfiguration(Event $event)
+    {
+        if (!defined('DRUPAL_ROOT')) {
+            define('DRUPAL_ROOT', $this->kernel->getDrupalRoot());
+        }
+
+        chdir(DRUPAL_ROOT);
+        drupal_override_server_variables(array('url' => $this->kernel->getUri()));
     }
 
     /**
@@ -32,10 +53,6 @@ class BootstrapListener extends ContainerAware
      */
     public function onKernelRequestEarly(GetResponseEvent $event)
     {
-        chdir(DRUPAL_ROOT);
-
-        // Original bootstrap phases mostly take care of including files.
-        drupal_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
 
         $request = $event->getRequest();
 

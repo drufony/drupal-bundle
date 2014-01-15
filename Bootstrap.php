@@ -3,6 +3,7 @@
 namespace Bangpound\Bundle\DrupalBundle;
 
 use Bangpound\Drupal\Bootstrap\AutoloadBootstrap;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class Bootstrap
@@ -10,6 +11,11 @@ use Bangpound\Drupal\Bootstrap\AutoloadBootstrap;
  */
 class Bootstrap extends AutoloadBootstrap
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
     /**
      * @param array $values
      */
@@ -145,5 +151,31 @@ class Bootstrap extends AutoloadBootstrap
             // the user is authenticated because they initialize the theme and call
             // menu_get_item().
         });
+    }
+
+    /**
+     * @param null $phase
+     */
+    protected function call($phase = NULL)
+    {
+        $this->dispatcher->dispatch(BootstrapEvents::preEvent($phase));
+        parent::call($phase);
+        $this->dispatcher->dispatch(BootstrapEvents::postEvent($phase));
+    }
+
+    /**
+     * @param EventDispatcherInterface $dispatcher
+     */
+    public function setEventDispatcher(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEventDispatcher()
+    {
+        return $this->dispatcher;
     }
 }

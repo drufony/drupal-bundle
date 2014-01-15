@@ -2,13 +2,17 @@
 
 namespace Bangpound\Bundle\DrupalBundle\Security\Encoder;
 
+use Bangpound\Bundle\DrupalBundle\HttpKernel\PseudoKernelInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class PasswordEncoder implements PasswordEncoderInterface
 {
 
-    public function __construct()
+    public function __construct(PseudoKernelInterface $kernel)
     {
+        if (!defined('DRUPAL_ROOT')) {
+            define('DRUPAL_ROOT', $this->kernel->getDrupalRoot());
+        }
         require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
     }
 

@@ -1,6 +1,7 @@
 <?php
 namespace Bangpound\Bundle\DrupalBundle\Routing;
 
+use Bangpound\Bundle\DrupalBundle\HttpKernel\PseudoKernelInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\Routing\Route;
@@ -14,9 +15,9 @@ class DrupalLoader implements LoaderInterface
 {
     private $loaded = false;
 
-    public function __construct()
+    public function __construct(PseudoKernelInterface $kernel)
     {
-        drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+        $kernel->boot();
     }
 
     /**
