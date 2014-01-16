@@ -3,7 +3,6 @@
 namespace Bangpound\Bundle\DrupalBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -19,8 +18,8 @@ class RequestListener
      *
      * @param GetResponseEvent $event
      *
-     * @throws AccessDeniedHttpException if the Drupal route is prohibited for
-     *                                   logged in user.
+     * @throws AccessDeniedException if the Drupal route is prohibited for
+     *                               logged in user.
      *
      * @see menu_execute_active_handler() for analogous function.
      */
@@ -33,7 +32,7 @@ class RequestListener
             if (!$router_item['access']) {
                 throw new AccessDeniedException;
             } elseif ($router_item['include_file']) {
-                require_once DRUPAL_ROOT . '/' . $router_item['include_file'];
+                require_once DRUPAL_ROOT .'/'. $router_item['include_file'];
             }
         }
     }
