@@ -6,6 +6,7 @@ use Bangpound\Bundle\DrupalBundle\Globals;
 use Bangpound\Bundle\DrupalBundle\PseudoKernel;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -19,6 +20,11 @@ class BootstrapListener extends ContainerAware
      * @var PseudoKernel
      */
     private $kernel;
+
+    /**
+     * @var string Current working directory
+     */
+    private $cwd;
 
     /**
      * @param \Bangpound\Bundle\DrupalBundle\Globals $globalz
@@ -42,7 +48,6 @@ class BootstrapListener extends ContainerAware
             define('DRUPAL_ROOT', $this->kernel->getWorkingDir());
         }
 
-        chdir(DRUPAL_ROOT);
         drupal_override_server_variables(array('url' => $this->kernel->getUri()));
     }
 
@@ -54,6 +59,8 @@ class BootstrapListener extends ContainerAware
     public function onKernelRequestEarly(GetResponseEvent $event)
     {
         if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
+            $this->cwd = getcwd();
+            chdir(DRUPAL_ROOT);
 
             $request = $event->getRequest();
 
@@ -177,6 +184,21 @@ class BootstrapListener extends ContainerAware
             menu_set_custom_theme();
             drupal_theme_initialize();
             module_invoke_all('init');
+        }
+    }
+
+    /**
+     * Listener resets cwd to its value prior to drupal_bootstrap.
+     *
+     * This is probably unnecessary because the cwd for Symfony web processes
+     * is already the web root.
+     *
+     * @param FinishRequestEvent $event
+     */
+    public function onKernelPostController(FinishRequestEvent $event)
+    {
+        if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
+            chdir($this->cwd);
         }
     }
 }
