@@ -141,6 +141,6 @@ services:
         class: %bangpound_drupal.pseudo_kernel.class%
         arguments: [ %kernel.environment%, %kernel.debug% ]
         calls:
-            - [ setDrupalRoot, [ "%kernel.root_dir%/../web" ]]
+            - [ setWorkingDir, [ "%kernel.root_dir%/../web" ]]
             - [ setUri, [ %bangpound_drupal.url% ]]
             - [ setBootstrap, [ @bangpound_drupal.bootstrap ] ]

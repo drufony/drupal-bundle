@@ -33,19 +33,6 @@ class PseudoKernel extends BasePseudoKernel
     }
 
     /**
-     * @param $root
-     */
-    public function setDrupalRoot($root)
-    {
-        $this->root = $root;
-    }
-
-    public function getDrupalRoot()
-    {
-        return $this->root;
-    }
-
-    /**
      * @param $uri
      */
     public function setUri($uri)
@@ -88,5 +75,13 @@ class PseudoKernel extends BasePseudoKernel
     public function getWorkingDir()
     {
         return $this->root;
+    }
+
+    /**
+     * @param $root
+     */
+    public function setWorkingDir($root)
+    {
+        $this->root = $root;
     }
 }

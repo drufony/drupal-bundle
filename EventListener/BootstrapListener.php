@@ -39,7 +39,7 @@ class BootstrapListener extends ContainerAware
     public function onPreConfiguration(Event $event)
     {
         if (!defined('DRUPAL_ROOT')) {
-            define('DRUPAL_ROOT', $this->kernel->getDrupalRoot());
+            define('DRUPAL_ROOT', $this->kernel->getWorkingDir());
         }
 
         chdir(DRUPAL_ROOT);

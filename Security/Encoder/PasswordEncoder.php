@@ -11,7 +11,7 @@ class PasswordEncoder implements PasswordEncoderInterface
     public function __construct(PseudoKernelInterface $kernel)
     {
         if (!defined('DRUPAL_ROOT')) {
-            define('DRUPAL_ROOT', $this->kernel->getDrupalRoot());
+            define('DRUPAL_ROOT', $kernel->getWorkingDir());
         }
         require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
     }
