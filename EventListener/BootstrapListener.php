@@ -35,6 +35,9 @@ class BootstrapListener extends ContainerAware
         // Abandon the Globals object. It just needs to be instantiated.
 
         $this->kernel = $kernel;
+        if (!defined('DRUPAL_ROOT')) {
+            define('DRUPAL_ROOT', $this->kernel->getWorkingDir());
+        }
     }
 
     /**
@@ -44,10 +47,6 @@ class BootstrapListener extends ContainerAware
      */
     public function onPreConfiguration(Event $event)
     {
-        if (!defined('DRUPAL_ROOT')) {
-            define('DRUPAL_ROOT', $this->kernel->getWorkingDir());
-        }
-
         drupal_override_server_variables(array('url' => $this->kernel->getUri()));
     }
 
