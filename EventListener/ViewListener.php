@@ -30,7 +30,10 @@ class ViewListener
             $default_delivery_callback = (isset($router_item) && $router_item) ? $router_item['delivery_callback'] : NULL;
             $page_callback_result = $event->getControllerResult();
             drupal_deliver_page($page_callback_result, $default_delivery_callback);
-            $response->setContent(ob_get_clean());
+            $content = ob_get_clean();
+            if ($content) {
+                $response->setContent($content);
+            }
             $event->setResponse($response);
         }
     }
