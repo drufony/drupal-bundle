@@ -6,6 +6,14 @@ bangpound_drupal_entity:
     resource: "@BangpoundDrupalBundle/Controller/EntityController.php"
     type:     annotation
 
-bangpound_drupal:
-    resource: .
-    type: drupal
+user:
+    path: /user
+    defaults:
+        _controller: user_page
+        _drupal: true
+
+user/login:
+    path: /user/login
+    defaults:
+        _controller: user_page
+        _drupal: true
