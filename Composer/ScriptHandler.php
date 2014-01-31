@@ -50,10 +50,13 @@ class ScriptHandler
 
     protected static function getOptions(CommandEvent $event)
     {
-        $options = array_merge(array(
-            'symfony-web-dir' => 'web',
-            'symfony-drupal-install' => 'relative',
-        ), $event->getComposer()->getPackage()->getExtra());
+        $options = array_merge(
+            array(
+                'symfony-web-dir' => 'web',
+                'symfony-drupal-install' => 'relative',
+            ),
+            $event->getComposer()->getPackage()->getExtra()
+        );
 
         $options['symfony-drupal-install'] = getenv('SYMFONY_DRUPAL_INSTALL') ?: $options['symfony-drupal-install'];
 

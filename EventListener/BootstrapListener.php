@@ -142,11 +142,13 @@ class BootstrapListener extends ContainerAware
                     drupal_alter('menu_get_item', $router_item, $path, $original_map);
 
                     // The requested path is an unalaised Drupal route.
-                    $request->attributes->add(array(
+                    $request->attributes->add(
+                        array(
                             '_drupal' => true,
                             '_controller' => $router_item['page_callback'],
                             '_route' => $router_item['path'],
-                        ));
+                        )
+                    );
                 }
             }
         }

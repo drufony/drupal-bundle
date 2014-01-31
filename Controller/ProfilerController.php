@@ -42,9 +42,11 @@ class ProfilerController extends ContainerAware
             return new Response('This query cannot be explained.');
         }
 
-        return $this->container->get('templating')->renderResponse('BangpoundDrupalBundle:Collector:explain.html.twig', array(
-            'data' => $results,
-            'query' => $query,
-        ));
+        return $this->container->get('templating')->renderResponse('BangpoundDrupalBundle:Collector:explain.html.twig',
+            array(
+                'data' => $results,
+                'query' => $query,
+            )
+        );
     }
 }
