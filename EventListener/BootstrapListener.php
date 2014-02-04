@@ -121,7 +121,8 @@ class BootstrapListener extends ContainerAware
             drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
             $request = $event->getRequest();
-            if (!$request->attributes->get('_drupal', false) && !empty($request->query->get('q', ''))) {
+            $q = $request->query->get('q', '');
+            if (!$request->attributes->get('_drupal', false) && !empty($q)) {
 
                 // The 'q' variable is pervasive in Drupal, so it's best to just keep
                 // it even though it's very un-Symfony.
