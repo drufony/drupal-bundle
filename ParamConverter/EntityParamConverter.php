@@ -33,7 +33,8 @@ class EntityParamConverter implements ParamConverterInterface
             return false;
         }
 
-        $entity = entity_load_single($entityType, $value);
+        $entities = entity_load($entityType, array($value));
+        $entity = reset($entities);
 
         if (empty($entity)) {
             throw new NotFoundHttpException('Entity not found.');
