@@ -19,8 +19,9 @@ class ScriptHandler
         $composer = $event->getComposer();
         $filesystem = new Filesystem();
 
+        $packages = $composer->getPackage()->getRequires();
         $drupal_root = $composer->getConfig()->get('vendor-dir') . DIRECTORY_SEPARATOR .
-            $composer->getPackage()->getRequires()['drupal/drupal']->getTarget();
+            $packages['drupal/drupal']->getTarget();
 
         $directories = array(
             'includes',
