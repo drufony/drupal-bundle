@@ -30,6 +30,7 @@ parameters:
 #   Twig extensions to replicate Drupal 7 render and theme functions.
     bangpound_drupal.twig.render_extension.class: Bangpound\Bundle\DrupalBundle\Twig\RenderExtension
     bangpound_drupal.twig.theme_extension.class: Bangpound\Bundle\DrupalBundle\Twig\ThemeExtension
+    bangpound_drupal.twig.toolbar_extension.class: Bangpound\Bundle\DrupalBundle\Twig\ToolbarExtension
 
 #   Pluggable parts of Drupal that are replaced by Symfony components.
     bangpound_drupal.conf.session_inc: sites/all/modules/symfony-module/session.inc
@@ -106,6 +107,12 @@ services:
 
     bangpound_drupal.twig.theme_extension:
         class: %bangpound_drupal.twig.theme_extension.class%
+        tags:
+            - { name: twig.extension }
+
+    bangpound_drupal.twig.toolbar_extension:
+        class: %bangpound_drupal.twig.toolbar_extension.class%
+        arguments: [ @request_stack ]
         tags:
             - { name: twig.extension }
 
