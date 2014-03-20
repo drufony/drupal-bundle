@@ -79,7 +79,7 @@ class ShutdownListener implements ContainerAwareInterface
                 $request->attributes->set('_drupal', true);
                 $this->shutdown = true;
                 $this->requestType = $event->getRequestType();
-                drupal_register_shutdown_function([$this, 'shutdownFunction']);
+                drupal_register_shutdown_function(array($this, 'shutdownFunction'));
             }
         } elseif ($event->getRequest()->attributes->get('_drupal', false) && $this->shutdown) {
             $this->shutdown = false;
