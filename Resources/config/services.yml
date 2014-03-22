@@ -21,6 +21,7 @@ parameters:
     bangpound_drupal.handler.session.class: Bangpound\Bundle\DrupalBundle\DrupalSessionHandler
     bangpound_drupal.user_provider.class: Bangpound\Bundle\DrupalBundle\Security\User\UserProvider
     bangpound_drupal.encoder.class: Bangpound\Bundle\DrupalBundle\Security\Encoder\PasswordEncoder
+    bangpound_drupal.hashed_password_authenticator.class: Bangpound\Bundle\DrupalBundle\Security\Authentication\HashedPasswordAuthenticator
 
 #   These events and functions trigger the Drupal module API because the Drupal submit handlers are completely
 #   irrelevant.
@@ -145,3 +146,6 @@ services:
             - [ setWorkingDir, [ "%kernel.root_dir%/../web" ]]
             - [ setUri, [ %bangpound_drupal.url% ]]
             - [ setBootstrap, [ @bangpound_drupal.bootstrap ] ]
+
+    bangpound_drupal.hashed_password_authenticator:
+        class:     %bangpound_drupal.hashed_password_authenticator.class%

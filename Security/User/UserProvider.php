@@ -53,4 +53,29 @@ class UserProvider implements UserProviderInterface
     {
         return $class === 'Bangpound\Bundle\DrupalBundle\Security\User\User';
     }
+
+    /**
+     * @see user_pass_reset()
+     * @param $uid
+     * @param $timestamp
+     * @param $hashed_pass
+     * @internal param $token
+     * @return User
+     */
+    public function getUsernameForHashedPassword($uid, $timestamp, $hashed_pass)
+    {
+        // Time out, in seconds, until login URL expires. Defaults to 24 hours =
+        // 86400 seconds.
+        $timeout = variable_get('user_password_reset_timeout', 86400);
+        $current = REQUEST_TIME;
+        // Some redundant checks for extra security ?
+        $users = user_load_multiple(array($uid), array('status' => '1'));
+        if ($timestamp <= $current && $account = reset($users)) {
+            // No time out for first time login.
+            if ($account->login && $current - $timestamp > $timeout) {
+            } elseif ($account->uid && $timestamp >= $account->login && $timestamp <= $current && $hashed_pass == user_pass_rehash($account->pass, $timestamp, $account->login)) {
+                return $account->name;
+            }
+        }
+    }
 }
