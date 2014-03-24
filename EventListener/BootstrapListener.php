@@ -4,7 +4,6 @@ namespace Bangpound\Bundle\DrupalBundle\EventListener;
 
 use Bangpound\Bundle\DrupalBundle\Globals;
 use Bangpound\Bundle\DrupalBundle\PseudoKernel;
-use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -14,7 +13,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * Class BootstrapListener
  * @package Bangpound\Bundle\DrupalBundle\EventListener
  */
-class BootstrapListener extends ContainerAware
+class BootstrapListener
 {
     /**
      * @var PseudoKernel

@@ -48,8 +48,6 @@ services:
     bangpound_drupal.listener.bootstrap:
         class: %bangpound_drupal.listener.bootstrap.class%
         arguments: [ @bangpound_drupal.globals, @bangpound_drupal.pseudo_kernel ]
-        calls:
-            - [ 'setContainer', [ @service_container ] ]
         tags:
             - { name: kernel.event_listener, event: drupal_bootstrap.pre.configuration, method: onPreConfiguration }
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestEarly, priority: 512 }

@@ -2,7 +2,7 @@
 
 namespace Bangpound\Bundle\DrupalBundle\EventListener;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
@@ -10,12 +10,8 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
  * Class ViewListener
  * @package Bangpound\Drupal\EventListener
  */
-class ViewListener
+class ViewListener extends ContainerAware
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
 
     /**
      *
@@ -36,17 +32,5 @@ class ViewListener
             }
             $event->setResponse($response);
         }
-    }
-
-    /**
-     * Sets the Container.
-     *
-     * @param ContainerInterface|null $container A ContainerInterface instance or null
-     *
-     * @api
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 }

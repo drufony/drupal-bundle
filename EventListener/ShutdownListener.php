@@ -1,8 +1,7 @@
 <?php
 namespace Bangpound\Bundle\DrupalBundle\EventListener;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -18,12 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
  * Class ShutdownListener
  * @package Bangpound\Drupal\EventListener
  */
-class ShutdownListener implements ContainerAwareInterface
+class ShutdownListener extends ContainerAware
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
     private $shutdown = false;
     private $requestType = HttpKernelInterface::MASTER_REQUEST;
 
@@ -137,17 +132,5 @@ class ShutdownListener implements ContainerAwareInterface
 
             $kernel->shutdown($request, $response, $this->requestType);
         }
-    }
-
-    /**
-     * Sets the Container.
-     *
-     * @param ContainerInterface|null $container A ContainerInterface instance or null
-     *
-     * @api
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 }
