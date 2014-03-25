@@ -94,7 +94,6 @@ services:
     bangpound_drupal.globals:
         class: %bangpound_drupal.globals.class%
         calls:
-            - [ 'offsetSet', ['response', @bangpound_drupal.response ] ]
             - [ 'offsetSet', ['service_container', @service_container ] ]
 
     bangpound_drupal.user_provider:
