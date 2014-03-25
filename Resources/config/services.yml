@@ -44,6 +44,7 @@ parameters:
 
 services:
     bangpound_drupal.response:
+        scope: request
         class: %bangpound_drupal.response.class%
 
     bangpound_drupal.listener.bootstrap:
