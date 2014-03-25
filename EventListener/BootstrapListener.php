@@ -132,7 +132,7 @@ class BootstrapListener
 
                 // The 'q' variable is pervasive in Drupal, so it's best to just keep
                 // it even though it's very un-Symfony.
-                $path = drupal_get_normal_path($_GET['q']);
+                $path = drupal_get_normal_path($q);
 
                 if (variable_get('menu_rebuild_needed', FALSE) || !variable_get('menu_masks', array())) {
                     menu_rebuild();
