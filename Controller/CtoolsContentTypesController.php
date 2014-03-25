@@ -34,7 +34,7 @@ class CtoolsContentTypesController extends Controller
      * @throws BadRequestHttpException
      * @return array
      */
-    public function renderAction($type, $subtype, $conf = [], $keywords = array(), $args = array(), $context = array(), $incoming_content = '')
+    public function renderAction($type, $subtype, $conf = array(), $keywords = array(), $args = array(), $context = array(), $incoming_content = '')
     {
         $block = ctools_content_render($type, $subtype, $conf, $keywords, $args, $context, $incoming_content);
         if ($block) {
