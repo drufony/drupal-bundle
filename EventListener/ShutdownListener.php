@@ -47,7 +47,7 @@ class ShutdownListener extends ContainerAware
     {
         $request = $event->getRequest();
         if ($this->matcher->matches($request)) {
-            if (ob_get_level()) {
+            if (ob_get_level() && HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
                 ob_end_clean();
             }
             ob_start();
