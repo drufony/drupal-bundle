@@ -124,40 +124,8 @@ class BootstrapListener
      */
     public function onKernelRequestBeforeRouter(GetResponseEvent $event)
     {
-        $request = $event->getRequest();
         if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
             drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-            $q = $request->query->get('q', '');
-            if (!$this->matcher->matches($request) && !empty($q)) {
-
-                // The 'q' variable is pervasive in Drupal, so it's best to just keep
-                // it even though it's very un-Symfony.
-                $path = drupal_get_normal_path($q);
-
-                if (variable_get('menu_rebuild_needed', FALSE) || !variable_get('menu_masks', array())) {
-                    menu_rebuild();
-                }
-                $original_map = arg(NULL, $path);
-
-                $parts = array_slice($original_map, 0, MENU_MAX_PARTS);
-                $ancestors = menu_get_ancestors($parts);
-                $router_item = db_query_range('SELECT * FROM {menu_router} WHERE path IN (:ancestors) ORDER BY fit DESC', 0, 1, array(':ancestors' => $ancestors))->fetchAssoc();
-
-                if ($router_item) {
-                    // Allow modules to alter the router item before it is translated and
-                    // checked for access.
-                    drupal_alter('menu_get_item', $router_item, $path, $original_map);
-
-                    // The requested path is an unalaised Drupal route.
-                    $request->attributes->add(
-                        array(
-                            '_drupal' => true,
-                            '_controller' => $router_item['page_callback'],
-                            '_route' => $router_item['path'],
-                        )
-                    );
-                }
-            }
         }
     }
 

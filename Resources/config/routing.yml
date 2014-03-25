@@ -5,15 +5,3 @@ bangpound_drupal_ctools_content_types:
 bangpound_drupal_entity:
     resource: "@BangpoundDrupalBundle/Controller/EntityController.php"
     type:     annotation
-
-user:
-    path: /user
-    defaults:
-        _controller: user_page
-        _drupal: true
-
-user/login:
-    path: /user/login
-    defaults:
-        _controller: user_page
-        _drupal: true

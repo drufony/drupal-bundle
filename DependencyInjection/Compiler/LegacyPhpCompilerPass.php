@@ -21,8 +21,5 @@ class LegacyPhpCompilerPass implements CompilerPassInterface
     {
         $parameter = $container->getParameter('bangpound_drupal.http_kernel.class');
         $container->setParameter('http_kernel.class', $parameter);
-
-        $parameter = $container->getParameter('bangpound_drupal.controller_resolver.class');
-        $container->setParameter('controller_resolver.class', $parameter);
     }
 }
