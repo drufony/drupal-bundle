@@ -42,6 +42,8 @@ parameters:
     bangpound_drupal.converter.drupal_entity.class: Bangpound\Bundle\DrupalBundle\ParamConverter\EntityParamConverter
     bangpound_drupal.database.data_collector.class: Bangpound\Bundle\DrupalBundle\DataCollector\DrupalDatabaseDataCollector
 
+    bangpound_drupal.drush_command.class: Bangpound\Bundle\DrupalBundle\Command\DrushCommand
+
 services:
     bangpound_drupal.response:
         scope: request
@@ -161,3 +163,8 @@ services:
         class: %bangpound_drupal.router.class%
         tags:
             - { name: router }
+
+    bangpound_drupal.drush_command:
+        class: %bangpound_drupal.drush_command.class%
+        tags:
+            - { name: console.command }
