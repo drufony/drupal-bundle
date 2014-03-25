@@ -2,6 +2,7 @@
 
 namespace Bangpound\Bundle\DrupalBundle\EventListener;
 
+use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -11,6 +12,18 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class RequestListener
 {
+    /**
+     * @var RequestMatcherInterface Matches Drupal routes.
+     */
+    private $matcher;
+
+    /**
+     * @param RequestMatcherInterface $matcher
+     */
+    public function __construct(RequestMatcherInterface $matcher)
+    {
+        $this->matcher = $matcher;
+    }
 
     /**
      * This method is based on menu_execute_active_handler() which is called
@@ -26,7 +39,7 @@ class RequestListener
     public function onKernelRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
-        if ($request->attributes->get('_drupal', false)) {
+        if ($this->matcher->matches($request)) {
             $router_item = menu_get_item();
             $request->attributes->set('_router_item', $router_item);
             if (!$router_item['access']) {

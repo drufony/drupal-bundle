@@ -8,6 +8,7 @@ parameters:
     bangpound_drupal.response.class:  Symfony\Component\HttpFoundation\Response
     bangpound_drupal.globals.class:   Bangpound\Bundle\DrupalBundle\Globals
     bangpound_drupal.pseudo_kernel.class: Bangpound\Bundle\DrupalBundle\PseudoKernel
+    bangpound_drupal.request_matcher.class: Symfony\Component\HttpFoundation\RequestMatcher
 
 #   Bootstrap listener coordinates Drupal bootstrap during the kernel.request event.
     bangpound_drupal.listener.bootstrap.class: Bangpound\Bundle\DrupalBundle\EventListener\BootstrapListener
@@ -47,7 +48,7 @@ services:
 
     bangpound_drupal.listener.bootstrap:
         class: %bangpound_drupal.listener.bootstrap.class%
-        arguments: [ @bangpound_drupal.globals, @bangpound_drupal.pseudo_kernel ]
+        arguments: [ @bangpound_drupal.globals, @bangpound_drupal.pseudo_kernel, @bangpound_drupal.request_matcher ]
         tags:
             - { name: kernel.event_listener, event: drupal_bootstrap.pre.configuration, method: onPreConfiguration }
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestEarly, priority: 512 }
@@ -60,11 +61,13 @@ services:
 
     bangpound_drupal.listener.request:
         class: %bangpound_drupal.listener.request.class%
+        arguments: [ @bangpound_drupal.request_matcher ]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
     bangpound_drupal.listener.view:
         class: %bangpound_drupal.listener.view.class%
+        arguments: [ @bangpound_drupal.request_matcher ]
         calls:
             - [ 'setContainer', [ @service_container ] ]
         tags:
@@ -72,6 +75,7 @@ services:
 
     bangpound_drupal.listener.shutdown:
         class: %bangpound_drupal.listener.shutdown.class%
+        arguments: [ @bangpound_drupal.request_matcher ]
         calls:
             - [ 'setContainer', [ @service_container ] ]
         tags:
@@ -147,3 +151,8 @@ services:
 
     bangpound_drupal.hashed_password_authenticator:
         class:     %bangpound_drupal.hashed_password_authenticator.class%
+
+    bangpound_drupal.request_matcher:
+        class:  %bangpound_drupal.request_matcher.class%
+        calls:
+            - [ matchAttribute, [ '_drupal', true ] ]

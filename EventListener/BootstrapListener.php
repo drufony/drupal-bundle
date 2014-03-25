@@ -5,6 +5,7 @@ namespace Bangpound\Bundle\DrupalBundle\EventListener;
 use Bangpound\Bundle\DrupalBundle\Globals;
 use Bangpound\Bundle\DrupalBundle\PseudoKernel;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -26,14 +27,21 @@ class BootstrapListener
     private $cwd;
 
     /**
+     * @var RequestMatcherInterface Matches Drupal routes.
+     */
+    private $matcher;
+
+    /**
      * @param \Bangpound\Bundle\DrupalBundle\Globals $globalz
      * @param PseudoKernel                           $kernel
+     * @param RequestMatcherInterface                $matcher
      */
-    public function __construct(Globals $globalz, PseudoKernel $kernel)
+    public function __construct(Globals $globalz, PseudoKernel $kernel, RequestMatcherInterface $matcher)
     {
         // Abandon the Globals object. It just needs to be instantiated.
 
         $this->kernel = $kernel;
+        $this->matcher = $matcher;
         if (!defined('DRUPAL_ROOT')) {
             define('DRUPAL_ROOT', $this->kernel->getWorkingDir());
         }
@@ -56,11 +64,11 @@ class BootstrapListener
      */
     public function onKernelRequestEarly(GetResponseEvent $event)
     {
+        $request = $event->getRequest();
+
         if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
             $this->cwd = getcwd();
             chdir(DRUPAL_ROOT);
-
-            $request = $event->getRequest();
 
             // When clean URLs are enabled, emulate ?q=foo/bar using REQUEST_URI. It is
             // not possible to append the query string using mod_rewrite without the B
@@ -116,12 +124,11 @@ class BootstrapListener
      */
     public function onKernelRequestBeforeRouter(GetResponseEvent $event)
     {
+        $request = $event->getRequest();
         if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
             drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-
-            $request = $event->getRequest();
             $q = $request->query->get('q', '');
-            if (!$request->attributes->get('_drupal', false) && !empty($q)) {
+            if (!$this->matcher->matches($request) && !empty($q)) {
 
                 // The 'q' variable is pervasive in Drupal, so it's best to just keep
                 // it even though it's very un-Symfony.

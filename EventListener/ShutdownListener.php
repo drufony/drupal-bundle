@@ -2,6 +2,7 @@
 namespace Bangpound\Bundle\DrupalBundle\EventListener;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -23,6 +24,19 @@ class ShutdownListener extends ContainerAware
     private $requestType = HttpKernelInterface::MASTER_REQUEST;
 
     /**
+     * @var RequestMatcherInterface Matches Drupal routes.
+     */
+    private $matcher;
+
+    /**
+     * @param RequestMatcherInterface $matcher
+     */
+    public function __construct(RequestMatcherInterface $matcher)
+    {
+        $this->matcher = $matcher;
+    }
+
+    /**
      * Request event sets up output buffering after ending all open buffers.
      *
      * This supercedes all ob_ functions in Bootstrap.
@@ -31,7 +45,8 @@ class ShutdownListener extends ContainerAware
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if ($event->getRequest()->attributes->get('_drupal', false)) {
+        $request = $event->getRequest();
+        if ($this->matcher->matches($request)) {
             if (ob_get_level()) {
                 ob_end_clean();
             }
@@ -48,7 +63,8 @@ class ShutdownListener extends ContainerAware
      */
     public function onKernelController(FilterControllerEvent $event)
     {
-        if ($event->getRequest()->attributes->get('_drupal', false)) {
+        $request = $event->getRequest();
+        if ($this->matcher->matches($request)) {
             $this->shutdown = true;
             $this->requestType = $event->getRequestType();
             drupal_register_shutdown_function(array($this, 'shutdownFunction'));
@@ -65,18 +81,18 @@ class ShutdownListener extends ContainerAware
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
+        $request = $event->getRequest();
         if (!$this->shutdown) {
             $exception = $event->getException();
             if (is_a($exception, 'Symfony\\Component\\HttpKernel\\Exception\\AccessDeniedHttpException') ||
                 is_a($exception, 'Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException'))
             {
-                $request = $event->getRequest();
                 $request->attributes->set('_drupal', true);
                 $this->shutdown = true;
                 $this->requestType = $event->getRequestType();
                 drupal_register_shutdown_function(array($this, 'shutdownFunction'));
             }
-        } elseif ($event->getRequest()->attributes->get('_drupal', false) && $this->shutdown) {
+        } elseif ($this->matcher->matches($request) && $this->shutdown) {
             $this->shutdown = false;
         }
     }
@@ -89,7 +105,8 @@ class ShutdownListener extends ContainerAware
      */
     public function onKernelPostController(KernelEvent $event)
     {
-        if ($event->getRequest()->attributes->get('_drupal', false)) {
+        $request = $event->getRequest();
+        if ($this->matcher->matches($request)) {
             $this->shutdown = false;
         }
     }
@@ -102,7 +119,8 @@ class ShutdownListener extends ContainerAware
      */
     public function onKernelTerminate(PostResponseEvent $event)
     {
-        if ($event->getRequest()->attributes->get('_drupal', false)) {
+        $request = $event->getRequest();
+        if ($this->matcher->matches($request)) {
             $this->shutdown = false;
         }
     }
@@ -116,7 +134,7 @@ class ShutdownListener extends ContainerAware
         /** @var RequestStack $request_stack */
         $request_stack = $this->container->get('request_stack');
         $request = $request_stack->getCurrentRequest();
-        if ($request && $this->shutdown && $request->attributes->get('_drupal', false)) {
+        if ($request && $this->shutdown && $this->matcher->matches($request)) {
             /**
              * @var Request               $request
              * @var Response              $response
