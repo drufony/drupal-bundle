@@ -1,7 +1,6 @@
 <?php
 namespace Bangpound\Bundle\DrupalBundle\Routing;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
@@ -75,21 +74,16 @@ class DrupalRouter implements RouterInterface
             // checked for access.
             drupal_alter('menu_get_item', $router_item, $path, $original_map);
 
-            $page_callback = $router_item['page_callback'];
-
             // The requested path is an unalaised Drupal route.
             return array(
                 '_drupal' => true,
-                '_controller' => function (Request $request) use ($page_callback) {
-                        $router_item = $request->attributes->get('_router_item', array(
-                                'page_callback' => $page_callback,
-                                'page_arguments' => array(),
-                            )
-                        );
-
+                '_controller' => function ($_router_item) {
+                        $router_item = $_router_item;
                         if (!$router_item['access']) {
                             throw new AccessDeniedException;
-                        } elseif ($router_item['include_file']) {
+                        }
+
+                        if ($router_item['include_file']) {
                             require_once DRUPAL_ROOT .'/'. $router_item['include_file'];
                         }
 
