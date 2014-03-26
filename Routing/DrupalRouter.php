@@ -2,6 +2,7 @@
 namespace Bangpound\Bundle\DrupalBundle\Routing;
 
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\RouterInterface;
@@ -47,8 +48,11 @@ class DrupalRouter implements RouterInterface
         $options = array(
             'absolute' => $referenceType === self::ABSOLUTE_URL ? true : false,
         );
-
-        return url($name, $options);
+        $path = drupal_get_normal_path($name);
+        if ($item = menu_get_item($path)) {
+            return url($name, $options);
+        }
+        throw new RouteNotFoundException;
     }
 
     /**
