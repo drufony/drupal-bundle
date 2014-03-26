@@ -6,9 +6,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
+/**
+ * Class PageController
+ * @Route("/drupal")
+ * @package Bangpound\Bundle\DrupalBundle\Controller
+ */
 class PageController extends Controller
 {
+    /**
+     * @param  null                                                                    $path
+     * @param  bool                                                                    $deliver
+     * @return object|Response
+     * @Route("/{path}", name="controller", defaults={"deliver" = true}, requirements={"path" = ".+"})
+     * @throws \Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+     */
     public function callbackAction($path = null, $deliver = true)
     {
         menu_set_active_item($path);
