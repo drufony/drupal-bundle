@@ -11,6 +11,7 @@ class PageController extends Controller
 {
     public function callbackAction($path = null, $deliver = true)
     {
+        menu_set_active_item($path);
         $page_callback_result = menu_execute_active_handler($path, $deliver);
         if (is_int($page_callback_result)) {
             switch ($page_callback_result) {
