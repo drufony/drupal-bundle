@@ -4,4 +4,13 @@
 
 {% block content -%}
     {% if content is defined %}{{ drupal_render('content') }}{% endif %}
+    {% if admin_links is defined %}
+        <ul>
+            {% for admin_link in admin_links %}
+            <li>
+                <a href="{{ path(admin_link.href, { destination: app.request.pathInfo }) }}">{{ admin_link.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {%- endblock %}
