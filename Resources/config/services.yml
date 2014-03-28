@@ -1,7 +1,7 @@
 parameters:
 
 #   Fundamental HttpKernel components that turn Drupal page callbacks into Symfony controllers.
-    bangpound_drupal.http_kernel.class:         Bangpound\Bundle\DrupalBundle\DependencyInjection\ContainerAwareLegacyPhpHttpKernel
+    bangpound_drupal.http_kernel.class:         Bangpound\LegacyPhp\DependencyInjection\ContainerAwareHttpKernel
 
     bangpound_drupal.bootstrap.class: Bangpound\Bundle\DrupalBundle\Bootstrap
     bangpound_drupal.response.class:  Symfony\Component\HttpFoundation\Response
