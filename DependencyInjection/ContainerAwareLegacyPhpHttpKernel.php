@@ -2,16 +2,15 @@
 
 namespace Bangpound\Bundle\DrupalBundle\DependencyInjection;
 
-use Bangpound\Bundle\DrupalBundle\HttpKernel\ShutdownableInterface;
+use Bangpound\LegacyPhp\HttpKernel;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
+use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\DependencyInjection\Scope;
-use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Adds a managed request scope.
@@ -19,39 +18,52 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class ContainerAwareLegacyPhpHttpKernel extends ContainerAwareHttpKernel implements ShutdownableInterface
+class ContainerAwareLegacyPhpHttpKernel extends HttpKernel
 {
+    protected $container;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param EventDispatcherInterface    $dispatcher         An EventDispatcherInterface instance
+     * @param ContainerInterface          $container          A ContainerInterface instance
+     * @param ControllerResolverInterface $controllerResolver A ControllerResolverInterface instance
+     * @param RequestStack                $requestStack       A stack for master/sub requests
      */
-    public function shutdown(Request $request, Response $response, $type = HttpKernelInterface::MASTER_REQUEST)
+    public function __construct(EventDispatcherInterface $dispatcher, ContainerInterface $container, ControllerResolverInterface $controllerResolver, RequestStack $requestStack = null)
     {
-        $response = $this->filterResponse($response, $request, $type);
-        $response->send();
-        $this->terminate($request, $response);
+        parent::__construct($dispatcher, $controllerResolver, $requestStack);
+
+        $this->container = $container;
+
+        // the request scope might have been created before (see FrameworkBundle)
+        if (!$container->hasScope('request')) {
+            $container->addScope(new Scope('request'));
+        }
     }
 
     /**
      * {@inheritdoc}
      */
-    private function filterResponse(Response $response, Request $request, $type)
+    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
-        $event = new FilterResponseEvent($this, $request, $type, $response);
+        $request->headers->set('X-Php-Ob-Level', ob_get_level());
 
-        $this->dispatcher->dispatch(KernelEvents::RESPONSE, $event);
+        $this->container->enterScope('request');
+        $this->container->set('request', $request, 'request');
 
-        $this->finishRequest($request, $type);
+        try {
+            $response = parent::handle($request, $type, $catch);
+        } catch (\Exception $e) {
+            $this->container->set('request', null, 'request');
+            $this->container->leaveScope('request');
 
-        return $event->getResponse();
-    }
+            throw $e;
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    private function finishRequest(Request $request, $type)
-    {
-        $this->dispatcher->dispatch(KernelEvents::FINISH_REQUEST, new FinishRequestEvent($this, $request, $type));
-        $this->requestStack->pop();
+        $this->container->set('request', null, 'request');
+        $this->container->leaveScope('request');
+
+        return $response;
     }
 }

@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+        "bangpound/legacy-php-http-kernel": "dev-master",
         "symfony-cmf/routing-bundle": "~1.1"
     },
     "autoload": {
