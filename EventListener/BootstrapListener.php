@@ -2,6 +2,7 @@
 
 namespace Bangpound\Bundle\DrupalBundle\EventListener;
 
+use Bangpound\Bridge\Drupal\Event\BootstrapEvent;
 use Bangpound\Bundle\DrupalBundle\Globals;
 use Bangpound\Bundle\DrupalBundle\PseudoKernel;
 use Symfony\Component\EventDispatcher\Event;
@@ -50,9 +51,9 @@ class BootstrapListener
     /**
      * Listener prepares Drupal bootstrap environment.
      *
-     * @param Event $event
+     * @param \Bangpound\Bridge\Drupal\Event\BootstrapEvent $event
      */
-    public function onPreConfiguration(Event $event)
+    public function onBootstrapConfiguration(BootstrapEvent $event)
     {
         drupal_override_server_variables(array('url' => $this->kernel->getUri()));
     }

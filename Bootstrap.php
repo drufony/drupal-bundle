@@ -90,10 +90,6 @@ class Bootstrap extends BaseBootstrap
 
         // DRUPAL_BOOTSTRAP_SESSION - in base class.
 
-        $this[DRUPAL_BOOTSTRAP_PAGE_HEADER] = $this->share(function () {
-            bootstrap_invoke_all('boot');
-        });
-
         // DRUPAL_BOOTSTRAP_LANGUAGE
 
         $this[DRUPAL_BOOTSTRAP_FULL] = $this->share(function () {

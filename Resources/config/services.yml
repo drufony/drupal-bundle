@@ -1,9 +1,9 @@
+imports:
+    - { resource: http_kernel.yml }
+    - { resource: bootstrap.yml }
+
 parameters:
 
-#   Fundamental HttpKernel components that turn Drupal page callbacks into Symfony controllers.
-    bangpound_drupal.http_kernel.class:         Bangpound\LegacyPhp\DependencyInjection\ContainerAwareHttpKernel
-
-    bangpound_drupal.bootstrap.class: Bangpound\Bundle\DrupalBundle\Bootstrap
     bangpound_drupal.response.class:  Symfony\Component\HttpFoundation\Response
     bangpound_drupal.globals.class:   Bangpound\Bundle\DrupalBundle\Globals
     bangpound_drupal.pseudo_kernel.class: Bangpound\Bundle\DrupalBundle\PseudoKernel
@@ -15,9 +15,6 @@ parameters:
 
 #   Request, View and Shutdown listener integrate Symfony and Drupal 7.
     bangpound_drupal.listener.request.class: Bangpound\Bundle\DrupalBundle\EventListener\RequestListener
-    bangpound_drupal.listener.view.class: Bangpound\Bundle\DrupalBundle\EventListener\ViewListener
-    bangpound_drupal.listener.shutdown.class: Bangpound\LegacyPhp\EventListener\ShutdownListener
-    bangpound_drupal.listener.output_buffer.class: Bangpound\Bundle\DrupalBundle\EventListener\OutputBufferListener
 
 #   Drupal users authenticate as Symfony users and are part of sessions.
     bangpound_drupal.handler.session.class: Bangpound\Bundle\DrupalBundle\DrupalSessionHandler
@@ -53,7 +50,7 @@ services:
         class: %bangpound_drupal.listener.bootstrap.class%
         arguments: [ @bangpound_drupal.globals, @bangpound_drupal.pseudo_kernel, @bangpound_drupal.request_matcher ]
         tags:
-            - { name: kernel.event_listener, event: drupal_bootstrap.pre.configuration, method: onPreConfiguration }
+            - { name: kernel.event_listener, event: drupal_bootstrap.configuration, method: onBootstrapConfiguration, priority: 8 }
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestEarly, priority: 512 }
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestBeforeSession, priority: 129 }
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestAfterSession, priority: 127 }
@@ -67,28 +64,6 @@ services:
         arguments: [ @bangpound_drupal.request_matcher ]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-
-    bangpound_drupal.listener.view:
-        class: %bangpound_drupal.listener.view.class%
-        arguments: [ @bangpound_drupal.request_matcher ]
-        calls:
-            - [ 'setContainer', [ @service_container ] ]
-        tags:
-            - { name: kernel.event_listener, event: kernel.view, method: onKernelView, priority: 8 }
-
-    bangpound_drupal.listener.shutdown:
-        class: %bangpound_drupal.listener.shutdown.class%
-        arguments: [ @bangpound_drupal.request_matcher ]
-        tags:
-            - { name: kernel.event_subscriber }
-
-    bangpound_drupal.listener.output_buffer:
-        class: %bangpound_drupal.listener.output_buffer.class%
-        arguments: [ @bangpound_drupal.request_matcher ]
-        calls:
-            - [ 'setContainer', [ @service_container ] ]
-        tags:
-            - { name: kernel.event_subscriber }
 
     bangpound_drupal.handler.session:
         class: %bangpound_drupal.handler.session.class%
@@ -137,13 +112,6 @@ services:
         tags:
             - { name: request.param_converter, converter: drupal.entity }
 
-    bangpound_drupal.bootstrap:
-        class: %bangpound_drupal.bootstrap.class%
-        arguments:
-            - { DRUPAL_ROOT: "%kernel.root_dir%/../web" }
-        calls:
-            - [ setEventDispatcher, [ @event_dispatcher ] ]
-
     bangpound_drupal.pseudo_kernel:
         class: %bangpound_drupal.pseudo_kernel.class%
         arguments: [ %kernel.environment%, %kernel.debug% ]
@@ -154,11 +122,6 @@ services:
 
     bangpound_drupal.hashed_password_authenticator:
         class:     %bangpound_drupal.hashed_password_authenticator.class%
-
-    bangpound_drupal.request_matcher:
-        class:  %bangpound_drupal.request_matcher.class%
-        calls:
-            - [ matchAttribute, [ '_drupal', true ] ]
 
     bangpound_drupal.router:
         class: %bangpound_drupal.router.class%
