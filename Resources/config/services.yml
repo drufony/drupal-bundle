@@ -41,7 +41,6 @@ parameters:
 
 #   Controller parameter converter for Entities.
     bangpound_drupal.converter.drupal_entity.class: Bangpound\Bundle\DrupalBundle\ParamConverter\EntityParamConverter
-    bangpound_drupal.database.data_collector.class: Bangpound\Bundle\DrupalBundle\DataCollector\DrupalDatabaseDataCollector
 
     bangpound_drupal.drush_command.class: Bangpound\Bundle\DrupalBundle\Command\DrushCommand
 
