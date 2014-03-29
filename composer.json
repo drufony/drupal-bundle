@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "bangpound/legacy-php-http-kernel": "~1.0",
+        "bangpound/drupal-bridge": "1.0.*@dev",
         "symfony-cmf/routing-bundle": "~1.1"
     },
     "autoload": {
