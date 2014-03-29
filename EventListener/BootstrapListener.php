@@ -143,28 +143,6 @@ class BootstrapListener
     }
 
     /**
-     * Completes the remaining parts of DRUPAL_BOOTSTRAP_FULL that conflict
-     * with the Symfony router.
-     *
-     * @param GetResponseEvent $event
-     */
-    public function onKernelRequestAfterFirewall(GetResponseEvent $event)
-    {
-        if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
-            // Prior to invoking hook_init(), initialize the theme (potentially a custom
-            // one for this page), so that:
-            // - Modules with hook_init() implementations that call theme() or
-            //   theme_get_registry() don't initialize the incorrect theme.
-            // - The theme can have hook_*_alter() implementations affect page building
-            //   (e.g., hook_form_alter(), hook_node_view_alter(), hook_page_alter()),
-            //   ahead of when rendering starts.
-            menu_set_custom_theme();
-            drupal_theme_initialize();
-            module_invoke_all('init');
-        }
-    }
-
-    /**
      * Listener resets cwd to its value prior to drupal_bootstrap.
      *
      * This is probably unnecessary because the cwd for Symfony web processes

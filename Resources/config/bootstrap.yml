@@ -5,6 +5,7 @@ parameters:
     bangpound_drupal.bridge.listener.error_handling.class: Bangpound\Bridge\Drupal\EventListener\ErrorHandlingListener
     bangpound_drupal.bridge.listener.page_cache.class: Bangpound\Bridge\Drupal\EventListener\PageCacheListener
     bangpound_drupal.bridge.listener.page_header.class: Bangpound\Bridge\Drupal\EventListener\PageHeaderListener
+    bangpound_drupal.bridge.listener.full_bootstrap.class: Bangpound\Bridge\Drupal\EventListener\FullBootstrapListener
 
 services:
     bangpound_drupal.bootstrap:
@@ -38,3 +39,10 @@ services:
         class: %bangpound_drupal.bridge.listener.page_header.class%
         tags:
             - { name: kernel.event_subscriber }
+
+    bangpound_drupal.bridge.listener.full_bootstrap:
+        class: %bangpound_drupal.bridge.listener.full_bootstrap.class%
+        tags:
+            - { name: kernel.event_listener, event: drupal_bootstrap.full, method: onBootstrapFull, priority: 8 }
+            - { name: kernel.event_listener, event: kernel.request, method: initializeTheme }
+            - { name: kernel.event_listener, event: kernel.request, method: hookInit }
