@@ -2,20 +2,15 @@
 
 namespace Bangpound\Bundle\DrupalBundle;
 
-use Bangpound\Drupal\Bootstrap\AutoloadBootstrap;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Bangpound\Bridge\Drupal\Bootstrap as BaseBootstrap;
+use Symfony\Component\ClassLoader\MapClassLoader;
 
 /**
  * Class Bootstrap
  * @package Bangpound\Bundle\DrupalBundle
  */
-class Bootstrap extends AutoloadBootstrap
+class Bootstrap extends BaseBootstrap
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
     /**
      * @param array $values
      */
@@ -95,6 +90,41 @@ class Bootstrap extends AutoloadBootstrap
 
         // DRUPAL_BOOTSTRAP_DATABASE - in parent class.
 
+        /**
+         * Include autoload scripts for each possible source.
+         *
+         * @see drupal_get_profile()
+         */
+        $this[DRUPAL_BOOTSTRAP_DATABASE] = $this->share($this->extend(DRUPAL_BOOTSTRAP_DATABASE, function ($object, $c) {
+            spl_autoload_unregister('drupal_autoload_class');
+            spl_autoload_unregister('drupal_autoload_interface');
+            $c['_drupal_bootstrap_composer_autoload'];
+        }));
+
+        $this['_drupal_bootstrap_composer_autoload'] = $this->share(function () {
+            global $install_state;
+
+            if (isset($install_state['parameters']['profile'])) {
+                $profile = $install_state['parameters']['profile'];
+            } else {
+                $profile = variable_get('install_profile', 'standard');
+            }
+
+            $searchdirs = array();
+            $searchdirs[] = DRUPAL_ROOT;
+            $searchdirs[] = DRUPAL_ROOT . '/profiles/'. $profile;
+            $searchdirs[] = DRUPAL_ROOT . '/sites/all';
+            $searchdirs[] = DRUPAL_ROOT . '/'. conf_path();
+
+            foreach ($searchdirs as $dir) {
+                $filename = $dir .'/classmap.php';
+                if (file_exists($filename)) {
+                    $loader = new MapClassLoader(require $filename);
+                    $loader->register(true);
+                }
+            }
+        });
+
         $this[DRUPAL_BOOTSTRAP_VARIABLES] = $this->share($this->extend(DRUPAL_BOOTSTRAP_VARIABLES, function () {
             if (isset($GLOBALS['service_container']) && is_a($GLOBALS['service_container'], 'Symfony\\Component\\DependencyInjection\\ContainerInterface')) {
                 /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
@@ -158,31 +188,5 @@ class Bootstrap extends AutoloadBootstrap
             // the user is authenticated because they initialize the theme and call
             // menu_get_item().
         });
-    }
-
-    /**
-     * @param null $phase
-     */
-    protected function call($phase = NULL)
-    {
-        $this->dispatcher->dispatch(BootstrapEvents::preEvent($phase));
-        parent::call($phase);
-        $this->dispatcher->dispatch(BootstrapEvents::postEvent($phase));
-    }
-
-    /**
-     * @param EventDispatcherInterface $dispatcher
-     */
-    public function setEventDispatcher(EventDispatcherInterface $dispatcher)
-    {
-        $this->dispatcher = $dispatcher;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getEventDispatcher()
-    {
-        return $this->dispatcher;
     }
 }
