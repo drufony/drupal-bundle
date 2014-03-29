@@ -77,53 +77,6 @@ class Bootstrap extends BaseBootstrap
             // We do not mess with cookie or session settings in Drupal at all.
         });
 
-        // DRUPAL_BOOTSTRAP_PAGE_CACHE only loads the cache handler.
-
-        $this[DRUPAL_BOOTSTRAP_PAGE_CACHE] = $this->share(function () {
-            // Allow specifying special cache handlers in settings.php, like
-            // using memcached or files for storing cache information.
-            require_once DRUPAL_ROOT . '/includes/cache.inc';
-            foreach (variable_get('cache_backends', array()) as $include) {
-                require_once DRUPAL_ROOT . '/' . $include;
-            }
-        });
-
-        // DRUPAL_BOOTSTRAP_DATABASE - in parent class.
-
-        /**
-         * Include autoload scripts for each possible source.
-         *
-         * @see drupal_get_profile()
-         */
-        $this[DRUPAL_BOOTSTRAP_DATABASE] = $this->share($this->extend(DRUPAL_BOOTSTRAP_DATABASE, function ($object, $c) {
-            spl_autoload_unregister('drupal_autoload_class');
-            spl_autoload_unregister('drupal_autoload_interface');
-            $c['_drupal_bootstrap_composer_autoload'];
-        }));
-
-        $this['_drupal_bootstrap_composer_autoload'] = $this->share(function () {
-            global $install_state;
-
-            if (isset($install_state['parameters']['profile'])) {
-                $profile = $install_state['parameters']['profile'];
-            } else {
-                $profile = variable_get('install_profile', 'standard');
-            }
-
-            $searchdirs = array();
-            $searchdirs[] = DRUPAL_ROOT;
-            $searchdirs[] = DRUPAL_ROOT . '/profiles/'. $profile;
-            $searchdirs[] = DRUPAL_ROOT . '/sites/all';
-            $searchdirs[] = DRUPAL_ROOT . '/'. conf_path();
-
-            foreach ($searchdirs as $dir) {
-                $filename = $dir .'/classmap.php';
-                if (file_exists($filename)) {
-                    $loader = new MapClassLoader(require $filename);
-                    $loader->register(true);
-                }
-            }
-        });
 
         $this[DRUPAL_BOOTSTRAP_VARIABLES] = $this->share($this->extend(DRUPAL_BOOTSTRAP_VARIABLES, function () {
             if (isset($GLOBALS['service_container']) && is_a($GLOBALS['service_container'], 'Symfony\\Component\\DependencyInjection\\ContainerInterface')) {
