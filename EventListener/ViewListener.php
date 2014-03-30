@@ -12,7 +12,6 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
  */
 class ViewListener extends ContainerAware
 {
-
     /**
      * @var RequestMatcherInterface Matches Drupal routes.
      */
