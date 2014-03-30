@@ -2,7 +2,7 @@ parameters:
     bangpound_drupal.bootstrap.class: Bangpound\Bundle\DrupalBundle\Bootstrap
     bangpound_drupal.bridge.listener.bootstrap.class: Bangpound\Bridge\Drupal\EventListener\BootstrapListener
     bangpound_drupal.bridge.listener.autoload.class: Bangpound\Bridge\Drupal\EventListener\AutoloadListener
-    bangpound_drupal.bridge.listener.error_handling.class: Bangpound\Bridge\Drupal\EventListener\ErrorHandlingListener
+    bangpound_drupal.bridge.listener.configuration.class: Bangpound\Bridge\Drupal\EventListener\ConfigurationBootstrapListener
     bangpound_drupal.bridge.listener.page_cache.class: Bangpound\Bridge\Drupal\EventListener\PageCacheListener
     bangpound_drupal.bridge.listener.page_header.class: Bangpound\Bridge\Drupal\EventListener\PageHeaderListener
     bangpound_drupal.bridge.listener.full_bootstrap.class: Bangpound\Bridge\Drupal\EventListener\FullBootstrapListener
@@ -25,8 +25,8 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    bangpound_drupal.bridge.listener.error_handling:
-        class: %bangpound_drupal.bridge.listener.error_handling.class%
+    bangpound_drupal.bridge.listener.configuration:
+        class: %bangpound_drupal.bridge.listener.configuration.class%
         tags:
             - { name: kernel.event_subscriber }
 
