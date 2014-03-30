@@ -56,7 +56,6 @@ services:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestAfterSession, priority: 127 }
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestBeforeRouter, priority: 33 }
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestAfterLocale, priority: 15 }
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestAfterFirewall, priority: 7 }
             - { name: kernel.event_listener, event: kernel.finish_request, method: onKernelPostController, priority: -512 }
 
     bangpound_drupal.listener.request:
