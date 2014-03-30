@@ -48,7 +48,7 @@ services:
 
     bangpound_drupal.listener.bootstrap:
         class: %bangpound_drupal.listener.bootstrap.class%
-        arguments: [ @bangpound_drupal.globals, @bangpound_drupal.pseudo_kernel, @bangpound_drupal.request_matcher ]
+        arguments: [ @bangpound_drupal.globals, @bangpound_drupal.pseudo_kernel ]
         tags:
             - { name: kernel.event_listener, event: drupal_bootstrap.configuration, method: onBootstrapConfiguration, priority: 8 }
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestEarly, priority: 512 }

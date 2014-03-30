@@ -6,7 +6,6 @@ use Bangpound\Bridge\Drupal\Event\BootstrapEvent;
 use Bangpound\Bundle\DrupalBundle\Globals;
 use Bangpound\Bundle\DrupalBundle\PseudoKernel;
 use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -28,21 +27,14 @@ class BootstrapListener
     private $cwd;
 
     /**
-     * @var RequestMatcherInterface Matches Drupal routes.
-     */
-    private $matcher;
-
-    /**
      * @param \Bangpound\Bundle\DrupalBundle\Globals $globalz
      * @param PseudoKernel                           $kernel
-     * @param RequestMatcherInterface                $matcher
      */
-    public function __construct(Globals $globalz, PseudoKernel $kernel, RequestMatcherInterface $matcher)
+    public function __construct(Globals $globalz, PseudoKernel $kernel)
     {
         // Abandon the Globals object. It just needs to be instantiated.
 
         $this->kernel = $kernel;
-        $this->matcher = $matcher;
         if (!defined('DRUPAL_ROOT')) {
             define('DRUPAL_ROOT', $this->kernel->getWorkingDir());
         }
