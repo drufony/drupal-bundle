@@ -8,7 +8,6 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class DrupalRouter
@@ -83,11 +82,12 @@ class DrupalRouter implements RouterInterface, LoggerAwareInterface
 
             // The requested path is an unalaised Drupal route.
             return array(
-                '_drupal' => true,
+                '_drupal' => 'true',
                 '_controller' => function ($_router_item) {
                         $router_item = $_router_item;
+
                         if (!$router_item['access']) {
-                            throw new AccessDeniedException;
+                            return MENU_ACCESS_DENIED;
                         }
 
                         if ($router_item['include_file']) {
