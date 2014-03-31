@@ -1,11 +1,19 @@
 parameters:
-    bangpound_drupal.bootstrap.class: Bangpound\Bundle\DrupalBundle\Bootstrap
-    bangpound_drupal.bridge.listener.bootstrap.class: Bangpound\Bridge\Drupal\EventListener\BootstrapListener
-    bangpound_drupal.bridge.listener.autoload.class: Bangpound\Bridge\Drupal\EventListener\AutoloadListener
-    bangpound_drupal.bridge.listener.configuration.class: Bangpound\Bridge\Drupal\EventListener\ConfigurationListener
-    bangpound_drupal.bridge.listener.page_cache.class: Bangpound\Bridge\Drupal\EventListener\PageCacheListener
-    bangpound_drupal.bridge.listener.page_header.class: Bangpound\Bridge\Drupal\EventListener\PageHeaderListener
-    bangpound_drupal.bridge.listener.full_bootstrap.class: Bangpound\Bridge\Drupal\EventListener\FullListener
+    bangpound_drupal.bootstrap.class:                         Bangpound\Bundle\DrupalBundle\Bootstrap
+
+#   This provides the original callbacks for each bootstrap phase.
+    bangpound_drupal.bootstrap.listener.default_phases.class: Bangpound\Bridge\Drupal\EventListener\DefaultPhasesListener
+
+#   Listeners remove or override the original behavior of the bootstrap phase.
+    bangpound_drupal.bootstrap.listener.configuration.class:  Bangpound\Bridge\Drupal\EventListener\ConfigurationListener
+    bangpound_drupal.bootstrap.listener.page_cache.class:     Bangpound\Bridge\Drupal\EventListener\PageCacheListener
+    bangpound_drupal.bootstrap.listener.database.class:       Bangpound\Bridge\Drupal\EventListener\DatabaseListener
+    bangpound_drupal.bootstrap.listener.page_header.class:    Bangpound\Bridge\Drupal\EventListener\PageHeaderListener
+    bangpound_drupal.bootstrap.listener.full.class:           Bangpound\Bridge\Drupal\EventListener\FullListener
+
+#   Repace the Drupal 7 registry with Symfony autoloading.
+    bangpound_drupal.bootstrap.listener.autoload.class:       Bangpound\Bridge\Drupal\EventListener\AutoloadListener
+
 #   Register Symfony parameters as Drupal 7 configuration variables.
     bangpound_drupal.bootstrap.listener.variables.class:      Bangpound\Bundle\DrupalBundle\EventListener\VariablesListener
 
@@ -20,34 +28,53 @@ services:
         calls:
             - [ setEventDispatcher, [ @event_dispatcher ] ]
 
-    bangpound_drupal.bridge.listener.bootstrap:
-        class: %bangpound_drupal.bridge.listener.bootstrap.class%
+    bangpound_drupal.bootstrap.listener.default_phases:
+        class: %bangpound_drupal.bootstrap.listener.default_phases.class%
         tags:
             - { name: kernel.event_subscriber }
 
-    bangpound_drupal.bridge.listener.autoload:
-        class: %bangpound_drupal.bridge.listener.autoload.class%
+    bangpound_drupal.bootstrap.listener.kernel:
+        class: %bangpound_drupal.bootstrap.listener.kernel.class%
         tags:
             - { name: kernel.event_subscriber }
 
-    bangpound_drupal.bridge.listener.configuration:
-        class: %bangpound_drupal.bridge.listener.configuration.class%
+    bangpound_drupal.bootstrap.listener.configuration:
+        class: %bangpound_drupal.bootstrap.listener.configuration.class%
+        tags:
+            - { name: kernel.event_listener, event: drupal_bootstrap.get.configuration, method: onBootstrapConfiguration, priority: 8 }
+            - { name: kernel.event_listener, event: drupal_bootstrap.filter.configuration, method: startTimer, priority: -3 }
+            - { name: kernel.event_listener, event: drupal_bootstrap.filter.configuration, method: initializeSettings, priority: -4 }
+
+    bangpound_drupal.bootstrap.listener.page_cache:
+        class: %bangpound_drupal.bootstrap.listener.page_cache.class%
+        tags:
+            - { name: kernel.event_listener, event: drupal_bootstrap.get.page_cache, method: onBootstrapPageCache, priority: 8 }
+
+    bangpound_drupal.bootstrap.listener.database:
+        class: %bangpound_drupal.bootstrap.listener.database.class%
+        tags:
+            - { name: kernel.event_listener, event: drupal_bootstrap.get.database, method: onBootstrapDatabase, priority: 8 }
+
+    bangpound_drupal.bootstrap.listener.page_header:
+        class: %bangpound_drupal.bootstrap.listener.page_header.class%
+        tags:
+            - { name: kernel.event_listener, event: drupal_bootstrap.get.page_header, method: onBootstrapPageHeader, priority: 8 }
+
+    bangpound_drupal.bootstrap.listener.full:
+        class: %bangpound_drupal.bootstrap.listener.full.class%
+        tags:
+            - { name: kernel.event_listener, event: drupal_bootstrap.get.full, method: onBootstrapFull, priority: 8 }
+            - { name: kernel.event_listener, event: kernel.request, method: initializeTheme, priority: -1 }
+            - { name: kernel.event_listener, event: kernel.request, method: hookInit, priority: -1 }
+
+    bangpound_drupal.bootstrap.listener.autoload:
+        class: %bangpound_drupal.bootstrap.listener.autoload.class%
         tags:
             - { name: kernel.event_subscriber }
 
-    bangpound_drupal.bridge.listener.page_cache:
-        class: %bangpound_drupal.bridge.listener.page_cache.class%
+    bangpound_drupal.bootstrap.listener.variables:
+        class: %bangpound_drupal.bootstrap.listener.variables.class%
+        calls:
+            - [ 'setContainer', [ @service_container ] ]
         tags:
             - { name: kernel.event_subscriber }
-
-    bangpound_drupal.bridge.listener.page_header:
-        class: %bangpound_drupal.bridge.listener.page_header.class%
-        tags:
-            - { name: kernel.event_subscriber }
-
-    bangpound_drupal.bridge.listener.full_bootstrap:
-        class: %bangpound_drupal.bridge.listener.full_bootstrap.class%
-        tags:
-            - { name: kernel.event_listener, event: drupal_bootstrap.full, method: onBootstrapFull, priority: 8 }
-            - { name: kernel.event_listener, event: kernel.request, method: initializeTheme }
-            - { name: kernel.event_listener, event: kernel.request, method: hookInit }
