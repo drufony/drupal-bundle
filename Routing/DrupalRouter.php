@@ -1,6 +1,8 @@
 <?php
 namespace Bangpound\Bundle\DrupalBundle\Routing;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\RequestContext;
@@ -12,9 +14,10 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  * Class DrupalRouter
  * @package Bangpound\Bundle\DrupalBundle\Routing
  */
-class DrupalRouter implements RouterInterface
+class DrupalRouter implements RouterInterface, LoggerAwareInterface
 {
     private $context;
+    private $logger;
 
     /**
      * {@inheritDocs}
@@ -95,7 +98,22 @@ class DrupalRouter implements RouterInterface
                     },
                 '_route' => $router_item['path'],
             );
+        } else {
+            if ($this->logger) {
+                $this->logger->info('Router '.get_class($router).' was not able to match, message "'.$e->getMessage().'"');
+            }
         }
-        throw new ResourceNotFoundException();
+        throw new ResourceNotFoundException(('Route for '. $path .' not found'));
+    }
+
+    /**
+     * Sets a logger instance on the object
+     *
+     * @param  LoggerInterface $logger
+     * @return null
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 }
