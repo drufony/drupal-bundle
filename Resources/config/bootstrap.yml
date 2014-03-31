@@ -9,12 +9,14 @@ parameters:
 #   Register Symfony parameters as Drupal 7 configuration variables.
     bangpound_drupal.bootstrap.listener.variables.class:      Bangpound\Bundle\DrupalBundle\EventListener\VariablesListener
 
+#   Bootstrap listener coordinates Drupal bootstrap during the kernel.request event.
+    bangpound_drupal.bootstrap.listener.kernel.class:         Bangpound\Bundle\DrupalBundle\EventListener\Bootstrap\KernelListener
+
 
 services:
     bangpound_drupal.bootstrap:
         class: %bangpound_drupal.bootstrap.class%
-        arguments:
-            - { DRUPAL_ROOT: "%kernel.root_dir%/../web" }
+        arguments: [ "%kernel.root_dir%/../web", %bangpound_drupal.url% ]
         calls:
             - [ setEventDispatcher, [ @event_dispatcher ] ]
 

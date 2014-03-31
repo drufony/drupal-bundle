@@ -3,6 +3,7 @@
 namespace Bangpound\Bundle\DrupalBundle;
 
 use Bangpound\Bridge\Drupal\Bootstrap as BaseBootstrap;
+use Drupal\Core\BootstrapPhases;
 
 /**
  * Class Bootstrap
@@ -10,17 +11,31 @@ use Bangpound\Bridge\Drupal\Bootstrap as BaseBootstrap;
  */
 class Bootstrap extends BaseBootstrap
 {
+    private $cwd;
+
     /**
-     * @param array $values
+     * @param string $root
+     * @param string $uri
      */
-    public function __construct(array $values = array())
+    public function __construct($root, $uri = null)
     {
-        // If this bootstrap object is used in a service, bootstrap.inc may
-        // not have been included yet. If the file is not included, the
-        // Drupal bootstrap constants are not available.
-        require_once $values['DRUPAL_ROOT'] .'/includes/bootstrap.inc';
+        if (!defined('DRUPAL_ROOT')) {
+            if (realpath($root) != getcwd()) {
+                $this->cwd = getcwd();
+                chdir($root);
+            }
 
-        parent::__construct($values);
+            /**
+             * Root directory of Drupal installation.
+             */
+            define('DRUPAL_ROOT', getcwd());
 
+            require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
+
+            if (BootstrapPhases::NEVER_STARTED === drupal_get_bootstrap_phase()) {
+                drupal_bootstrap(null, TRUE, $this);
+                drupal_override_server_variables(array('url' => $uri));
+            }
+        }
     }
 }

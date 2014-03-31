@@ -1,53 +1,43 @@
 <?php
 
-namespace Bangpound\Bundle\DrupalBundle\EventListener;
+namespace Bangpound\Bundle\DrupalBundle\EventListener\Bootstrap;
 
-use Bangpound\Bridge\Drupal\Event\BootstrapEvent;
 use Bangpound\Bundle\DrupalBundle\Globals;
-use Bangpound\Bundle\DrupalBundle\PseudoKernel;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Class BootstrapListener
- * @package Bangpound\Bundle\DrupalBundle\EventListener
+ * Class KernelListener
+ * @package Bangpound\Bundle\DrupalBundle\EventListener\Bootstrap
  */
-class BootstrapListener
+class KernelListener implements EventSubscriberInterface
 {
-    /**
-     * @var PseudoKernel
-     */
-    private $kernel;
-
     /**
      * @var string Current working directory
      */
     private $cwd;
 
     /**
-     * @param \Bangpound\Bundle\DrupalBundle\Globals $globalz
-     * @param PseudoKernel                           $kernel
+     * @return array
      */
-    public function __construct(Globals $globalz, PseudoKernel $kernel)
+    public static function getSubscribedEvents()
     {
-        // Abandon the Globals object. It just needs to be instantiated.
-
-        $this->kernel = $kernel;
-        if (!defined('DRUPAL_ROOT')) {
-            define('DRUPAL_ROOT', $this->kernel->getWorkingDir());
-        }
-    }
-
-    /**
-     * Listener prepares Drupal bootstrap environment.
-     *
-     * @param \Bangpound\Bridge\Drupal\Event\BootstrapEvent $event
-     */
-    public function onBootstrapConfiguration(BootstrapEvent $event)
-    {
-        drupal_override_server_variables(array('url' => $this->kernel->getUri()));
+        return array(
+            KernelEvents::REQUEST => array(
+                array('onKernelRequestEarly', 512),
+                array('onKernelRequestBeforeSession', 129),
+                array('onKernelRequestAfterSession', 127),
+                array('onKernelRequestBeforeRouter', 33),
+                array('onKernelRequestAfterLocale', 15),
+            ),
+            KernelEvents::FINISH_REQUEST => array(
+                array('onKernelPostController', -512),
+            ),
+        );
     }
 
     /**
@@ -57,26 +47,17 @@ class BootstrapListener
      */
     public function onKernelRequestEarly(GetResponseEvent $event)
     {
-        $request = $event->getRequest();
+//        $request = $event->getRequest();
 
         if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
-            $this->cwd = getcwd();
-            chdir(DRUPAL_ROOT);
-
-            // When clean URLs are enabled, emulate ?q=foo/bar using REQUEST_URI. It is
-            // not possible to append the query string using mod_rewrite without the B
-            // flag (this was added in Apache 2.2.8), because mod_rewrite unescapes the
-            // path before passing it on to PHP. This is a problem when the path contains
-            // e.g. "&" or "%" that have special meanings in URLs and must be encoded.
-            //
-            // @see drupal_environment_initialize();
-            $path = $_GET['q'] = urldecode(substr($request->getPathInfo(), 1));
-            $request->query->set('q', $path);
-
-            $GLOBALS['base_url'] = $request->getSchemeAndHttpHost();
-
             drupal_bootstrap(DRUPAL_BOOTSTRAP_VARIABLES);
         }
+
+//        // @see drupal_environment_initialize();
+//        $path = $_GET['q'] = urldecode(substr($request->getPathInfo(), 1));
+//        $request->query->set('q', $path);
+//
+//        $GLOBALS['base_url'] = $request->getSchemeAndHttpHost();
     }
 
     /**
@@ -106,7 +87,6 @@ class BootstrapListener
 
             // This is basically noop.
             drupal_bootstrap(DRUPAL_BOOTSTRAP_PAGE_HEADER);
-
         }
     }
 

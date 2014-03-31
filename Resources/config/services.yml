@@ -5,13 +5,8 @@ imports:
 parameters:
 
     bangpound_drupal.response.class:  Symfony\Component\HttpFoundation\Response
-    bangpound_drupal.globals.class:   Bangpound\Bundle\DrupalBundle\Globals
-    bangpound_drupal.pseudo_kernel.class: Bangpound\Bundle\DrupalBundle\PseudoKernel
     bangpound_drupal.request_matcher.class: Symfony\Component\HttpFoundation\RequestMatcher
     bangpound_drupal.router.class: Bangpound\Bundle\DrupalBundle\Routing\DrupalRouter
-
-#   Bootstrap listener coordinates Drupal bootstrap during the kernel.request event.
-    bangpound_drupal.listener.bootstrap.class: Bangpound\Bundle\DrupalBundle\EventListener\BootstrapListener
 
 #   Request, View and Shutdown listener integrate Symfony and Drupal 7.
     bangpound_drupal.listener.request.class: Bangpound\Bundle\DrupalBundle\EventListener\RequestListener
@@ -46,18 +41,6 @@ services:
         scope: request
         class: %bangpound_drupal.response.class%
 
-    bangpound_drupal.listener.bootstrap:
-        class: %bangpound_drupal.listener.bootstrap.class%
-        arguments: [ @bangpound_drupal.globals, @bangpound_drupal.pseudo_kernel ]
-        tags:
-            - { name: kernel.event_listener, event: drupal_bootstrap.configuration, method: onBootstrapConfiguration, priority: 8 }
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestEarly, priority: 512 }
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestBeforeSession, priority: 129 }
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestAfterSession, priority: 127 }
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestBeforeRouter, priority: 33 }
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequestAfterLocale, priority: 15 }
-            - { name: kernel.event_listener, event: kernel.finish_request, method: onKernelPostController, priority: -512 }
-
     bangpound_drupal.listener.request:
         class: %bangpound_drupal.listener.request.class%
         arguments: [ @bangpound_drupal.request_matcher ]
@@ -67,11 +50,6 @@ services:
     bangpound_drupal.handler.session:
         class: %bangpound_drupal.handler.session.class%
         arguments: [ @session.handler.native_file ]
-
-    bangpound_drupal.globals:
-        class: %bangpound_drupal.globals.class%
-        calls:
-            - [ 'offsetSet', ['service_container', @service_container ] ]
 
     bangpound_drupal.user_provider:
         class: %bangpound_drupal.user_provider.class%
