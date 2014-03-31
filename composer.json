@@ -13,7 +13,6 @@
         "symfony-cmf/routing-bundle": "~1.1"
     },
     "autoload": {
-        "psr-0": { "Bangpound\\Bundle\\DrupalBundle\\": "" }
+        "psr-4": { "Bangpound\\Bundle\\DrupalBundle\\": "" }
     },
-    "target-dir": "Bangpound/Bundle/DrupalBundle"
 }
