@@ -3,7 +3,7 @@ parameters:
     bangpound_drupal.http_kernel.class:         Bangpound\LegacyPhp\DependencyInjection\ContainerAwareHttpKernel
 
     bangpound_drupal.listener.shutdown.class: Bangpound\LegacyPhp\EventListener\ShutdownListener
-    bangpound_drupal.listener.view.class: Bangpound\Bridge\Drupal\EventListener\ViewListener
+    bangpound_drupal.listener.view.class:          Bangpound\Bridge\Drupal\EventListener\ViewListener
     bangpound_drupal.listener.output_buffer.class: Bangpound\Bundle\DrupalBundle\EventListener\OutputBufferListener
     bangpound_drupal.listener.header.class: Bangpound\LegacyPhp\EventListener\HeaderListener
 
