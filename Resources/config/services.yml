@@ -34,7 +34,7 @@ parameters:
 
 #   Pluggable parts of Drupal that are replaced by Symfony components.
     bangpound_drupal.conf.session_inc: sites/all/modules/symfony-module/session.inc
-    bangpound_drupal.conf.mail_system.default_system: Bangpound\Bundle\DrupalBundle\SwiftMailSystem
+    bangpound_drupal.conf.mail_system.default_system: Bangpound\Bridge\Drupal\SwiftMailSystem
 
 #   Controller parameter converter for Entities.
     bangpound_drupal.converter.drupal_entity.class: Bangpound\Bundle\DrupalBundle\ParamConverter\EntityParamConverter
