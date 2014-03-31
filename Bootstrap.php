@@ -22,14 +22,5 @@ class Bootstrap extends BaseBootstrap
 
         parent::__construct($values);
 
-        $this[DRUPAL_BOOTSTRAP_VARIABLES] = $this->share($this->extend(DRUPAL_BOOTSTRAP_VARIABLES, function () {
-            if (isset($GLOBALS['service_container']) && is_a($GLOBALS['service_container'], 'Symfony\\Component\\DependencyInjection\\ContainerInterface')) {
-                /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
-                $container = $GLOBALS['service_container'];
-
-                $GLOBALS['conf']['session_inc'] = $container->getParameter('bangpound_drupal.conf.session_inc');
-                $GLOBALS['conf']['mail_system']['default-system'] = $container->getParameter('bangpound_drupal.conf.mail_system.default_system');
-            }
-        }));
     }
 }

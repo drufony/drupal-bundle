@@ -6,6 +6,9 @@ parameters:
     bangpound_drupal.bridge.listener.page_cache.class: Bangpound\Bridge\Drupal\EventListener\PageCacheListener
     bangpound_drupal.bridge.listener.page_header.class: Bangpound\Bridge\Drupal\EventListener\PageHeaderListener
     bangpound_drupal.bridge.listener.full_bootstrap.class: Bangpound\Bridge\Drupal\EventListener\FullListener
+#   Register Symfony parameters as Drupal 7 configuration variables.
+    bangpound_drupal.bootstrap.listener.variables.class:      Bangpound\Bundle\DrupalBundle\EventListener\VariablesListener
+
 
 services:
     bangpound_drupal.bootstrap:
