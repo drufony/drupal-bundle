@@ -101,8 +101,6 @@ class KernelListener implements EventSubscriberInterface
                 $GLOBALS['user'] = drupal_anonymous_user();
                 date_default_timezone_set(drupal_get_user_timezone());
             }
-
-            // This is basically noop.
             drupal_bootstrap(DRUPAL_BOOTSTRAP_PAGE_HEADER);
         }
     }
