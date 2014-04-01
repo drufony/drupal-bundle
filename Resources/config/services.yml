@@ -43,8 +43,6 @@ services:
 
     bangpound_drupal.router:
         class: %bangpound_drupal.router.class%
-        calls:
-            - [ 'setLogger' , [ @logger ] ]
         tags:
             - { name: router }
 
