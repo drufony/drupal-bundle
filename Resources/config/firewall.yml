@@ -32,4 +32,4 @@ services:
 
     bangpound_drupal.encoder:
         class: %bangpound_drupal.encoder.class%
-        arguments: [ @bangpound_drupal.bootstrap ]
+        arguments: [ %kernel.root_dir%/../web ]

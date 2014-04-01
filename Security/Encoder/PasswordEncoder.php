@@ -2,15 +2,14 @@
 
 namespace Bangpound\Bundle\DrupalBundle\Security\Encoder;
 
-use Drupal\Core\BootstrapInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class PasswordEncoder implements PasswordEncoderInterface
 {
 
-    public function __construct(BootstrapInterface $object)
+    public function __construct($drupalRoot)
     {
-        require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
+        require_once $drupalRoot . '/includes/password.inc';
     }
 
     /**
