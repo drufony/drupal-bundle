@@ -26,7 +26,6 @@ services:
 
     bangpound_drupal.handler.session:
         class: %bangpound_drupal.handler.session.class%
-        arguments: [ @session.handler.native_file ]
 
     bangpound_drupal.user_provider:
         class: %bangpound_drupal.user_provider.class%
