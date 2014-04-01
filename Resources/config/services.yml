@@ -15,7 +15,7 @@ parameters:
 
 #   Pluggable parts of Drupal that are replaced by Symfony components.
     bangpound_drupal.conf.session_inc: sites/all/modules/symfony-module/session.inc
-    bangpound_drupal.conf.mail_system.default_system: Bangpound\Bridge\Drupal\SwiftMailSystem
+    bangpound_drupal.conf.mail_system.default_system: Bangpound\Bundle\DrupalBundle\SwiftMailSystem
 
 #   Controller parameter converter for Entities.
     bangpound_drupal.converter.drupal_entity.class: Bangpound\Bundle\DrupalBundle\ParamConverter\EntityParamConverter
@@ -23,6 +23,8 @@ parameters:
     bangpound_drupal.drush_command.class: Bangpound\Bundle\DrupalBundle\Command\DrushCommand
 
     bangpound_drupal.drufony.class: Drufony
+
+    bangpound_drupal.mailer.class: Bangpound\Bridge\Drupal\SwiftMailSystem
 
 services:
     bangpound_drupal.response:
@@ -55,3 +57,6 @@ services:
         class: %bangpound_drupal.drufony.class%
         calls:
             - [ 'setContainer', [ @service_container ] ]
+
+    bangpound_drupal.mailer:
+        class: %bangpound_drupal.mailer.class%
