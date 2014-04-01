@@ -47,17 +47,13 @@ class KernelListener implements EventSubscriberInterface
      */
     public function onKernelRequestEarly(GetResponseEvent $event)
     {
-//        $request = $event->getRequest();
-
+        $request = $event->getRequest();
         if ($event->isMasterRequest()) {
             drupal_bootstrap(DRUPAL_BOOTSTRAP_VARIABLES);
+            $path = $_GET['q'] = urldecode(substr($request->getPathInfo(), 1));
+            $request->query->set('q', $path);
+            $GLOBALS['base_url'] = $request->getSchemeAndHttpHost();
         }
-
-//        // @see drupal_environment_initialize();
-//        $path = $_GET['q'] = urldecode(substr($request->getPathInfo(), 1));
-//        $request->query->set('q', $path);
-//
-//        $GLOBALS['base_url'] = $request->getSchemeAndHttpHost();
     }
 
     /**
