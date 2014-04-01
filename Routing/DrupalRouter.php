@@ -1,6 +1,7 @@
 <?php
 namespace Bangpound\Bundle\DrupalBundle\Routing;
 
+use Drupal\Core\BootstrapInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\RequestContext;
@@ -14,6 +15,12 @@ use Symfony\Component\Routing\RouterInterface;
 class DrupalRouter implements RouterInterface
 {
     private $context;
+    private $object;
+
+    public function __construct(BootstrapInterface $object)
+    {
+        $this->object = $object;
+    }
 
     /**
      * {@inheritDocs}
