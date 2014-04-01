@@ -19,17 +19,23 @@ parameters:
 
 #   Bootstrap listener coordinates Drupal bootstrap during the kernel.request event.
     bangpound_drupal.bootstrap.listener.kernel.class:         Bangpound\Bundle\DrupalBundle\EventListener\Bootstrap\KernelListener
-
+    bangpound_drupal.bootstrap.phases.class:                  Drupal\Core\BootstrapPhases
 
 services:
     bangpound_drupal.bootstrap:
         class: %bangpound_drupal.bootstrap.class%
-        arguments: [ "%kernel.root_dir%/../web", %bangpound_drupal.url% ]
         calls:
+            - [ setUri, [ %bangpound_drupal.url% ] ]
+            - [ setRoot, [ %kernel.root_dir%/../web ] ]
             - [ setEventDispatcher, [ @event_dispatcher ] ]
+            - [ boot ]
+
+    bangpound_drupal.bootstrap.phases:
+        class: %bangpound_drupal.bootstrap.phases.class%
 
     bangpound_drupal.bootstrap.listener.default_phases:
         class: %bangpound_drupal.bootstrap.listener.default_phases.class%
+        arguments: [ @bangpound_drupal.bootstrap.phases ]
         tags:
             - { name: kernel.event_subscriber }
 

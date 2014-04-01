@@ -3,7 +3,6 @@
 namespace Bangpound\Bundle\DrupalBundle;
 
 use Bangpound\Bridge\Drupal\Bootstrap as BaseBootstrap;
-use Drupal\Core\BootstrapPhases;
 
 /**
  * Class Bootstrap
@@ -12,30 +11,68 @@ use Drupal\Core\BootstrapPhases;
 class Bootstrap extends BaseBootstrap
 {
     private $cwd;
+    private $root;
+    private $uri;
 
     /**
-     * @param string $root
-     * @param string $uri
+     * @return mixed
      */
-    public function __construct($root, $uri = null)
+    public function getRoot()
+    {
+        return $this->root;
+    }
+
+    /**
+     * @param mixed $root
+     */
+    public function setRoot($root)
+    {
+        $this->root = $root;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUri()
+    {
+        return $this->uri;
+    }
+
+    /**
+     * @param mixed $uri
+     */
+    public function setUri($uri)
+    {
+        $this->uri = $uri;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCwd()
+    {
+        return $this->cwd;
+    }
+
+    /**
+     * @param mixed $cwd
+     */
+    public function setCwd($cwd)
+    {
+        $this->cwd = $cwd;
+    }
+
+    public function boot()
     {
         if (!defined('DRUPAL_ROOT')) {
-            if (realpath($root) != getcwd()) {
-                $this->cwd = getcwd();
-                chdir($root);
+            if (getcwd() !== $this->getRoot()) {
+                $this->setCwd(getcwd());
+                chdir($this->getRoot());
             }
-
-            /**
-             * Root directory of Drupal installation.
-             */
             define('DRUPAL_ROOT', getcwd());
-
-            require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
-
-            if (BootstrapPhases::NEVER_STARTED === drupal_get_bootstrap_phase()) {
-                drupal_bootstrap(null, TRUE, $this);
-                drupal_override_server_variables(array('url' => $uri));
-            }
         }
+        require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
+        drupal_override_server_variables(array('url' => $this->uri));
+        drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL, TRUE, $this);
     }
 }
