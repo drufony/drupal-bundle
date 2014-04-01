@@ -22,7 +22,8 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('url')->defaultValue('http://localhost')->end()
+                ->scalarNode('url')->defaultValue('')->end()
+                ->scalarNode('prefix')->defaultValue('')->end()
             ->end()
         ;
 

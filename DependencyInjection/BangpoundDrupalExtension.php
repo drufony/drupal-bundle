@@ -26,5 +26,6 @@ class BangpoundDrupalExtension extends Extension
         $loader->load('services.yml');
 
         $container->setParameter('bangpound_drupal.url', $config['url']);
+        $container->setParameter('bangpound_drupal.prefix', $config['prefix']);
     }
 }
