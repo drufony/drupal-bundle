@@ -65,14 +65,10 @@ class Bootstrap extends BaseBootstrap
     public function boot()
     {
         if (!defined('DRUPAL_ROOT')) {
-            if (getcwd() !== $this->getRoot()) {
-                $this->setCwd(getcwd());
-                chdir($this->getRoot());
-            }
-            define('DRUPAL_ROOT', getcwd());
+            define('DRUPAL_ROOT', $this->root);
         }
         require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
         drupal_override_server_variables(array('url' => $this->uri));
-        drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL, TRUE, $this);
+        drupal_bootstrap(NULL, TRUE, $this);
     }
 }

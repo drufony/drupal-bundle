@@ -2,12 +2,12 @@
 
 namespace Bangpound\Bundle\DrupalBundle\EventListener\Bootstrap;
 
-use Bangpound\Bundle\DrupalBundle\Globals;
+use Bangpound\Bridge\Drupal\BootstrapEvents;
+use Bangpound\Bridge\Drupal\Event\GetCallableForPhase;
+use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -16,8 +16,12 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class KernelListener implements EventSubscriberInterface
 {
-    public function __construct(\Drufony $drufony)
+    private $cwd;
+    private $drupalRoot;
+
+    public function __construct($drupalRoot, \Drufony $drufony)
     {
+        $this->drupalRoot = $drupalRoot;
         // Only need to inject the Drufony object to instantiated it correctly.
     }
 
@@ -27,6 +31,9 @@ class KernelListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
+            BootstrapEvents::GET_CONFIGURATION => array(
+                array('onBootstrapConfiguration', 512),
+            ),
             KernelEvents::REQUEST => array(
                 array('onKernelRequestEarly', 512),
                 array('onKernelRequestBeforeSession', 129),
@@ -35,9 +42,23 @@ class KernelListener implements EventSubscriberInterface
                 array('onKernelRequestAfterLocale', 15),
             ),
             KernelEvents::FINISH_REQUEST => array(
-                array('onKernelPostController', -512),
+                array('restoreWorkingDirectory', -512),
             ),
+            ConsoleEvents::EXCEPTION => 'restoreWorkingDirectory',
+            ConsoleEvents::TERMINATE => 'restoreWorkingDirectory',
         );
+    }
+
+    /**
+     * Before bootstrapping, change the working directory.
+     *
+     * This is restored in restoreWorkingDirectory().
+     *
+     */
+    public function onBootstrapConfiguration(GetCallableForPhase $event)
+    {
+        $this->cwd = getcwd();
+        chdir($this->drupalRoot);
     }
 
     /**
@@ -116,11 +137,11 @@ class KernelListener implements EventSubscriberInterface
      * This is probably unnecessary because the cwd for Symfony web processes
      * is already the web root.
      *
-     * @param FinishRequestEvent $event
+     * @param Event $event
      */
-    public function onKernelPostController(FinishRequestEvent $event)
+    public function restoreWorkingDirectory(Event $event)
     {
-        if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
+        if ($this->cwd) {
             chdir($this->cwd);
         }
     }
