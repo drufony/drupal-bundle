@@ -49,7 +49,7 @@ class KernelListener implements EventSubscriberInterface
     {
 //        $request = $event->getRequest();
 
-        if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
+        if ($event->isMasterRequest()) {
             drupal_bootstrap(DRUPAL_BOOTSTRAP_VARIABLES);
         }
 
@@ -67,7 +67,7 @@ class KernelListener implements EventSubscriberInterface
      */
     public function onKernelRequestBeforeSession(GetResponseEvent $event)
     {
-        if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
+        if ($event->isMasterRequest()) {
             drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
         }
     }
@@ -79,7 +79,7 @@ class KernelListener implements EventSubscriberInterface
      */
     public function onKernelRequestAfterSession(GetResponseEvent $event)
     {
-        if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
+        if ($event->isMasterRequest()) {
             if (empty($GLOBALS['user'])) {
                 $GLOBALS['user'] = drupal_anonymous_user();
                 date_default_timezone_set(drupal_get_user_timezone());
@@ -97,7 +97,7 @@ class KernelListener implements EventSubscriberInterface
      */
     public function onKernelRequestBeforeRouter(GetResponseEvent $event)
     {
-        if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
+        if ($event->isMasterRequest()) {
             drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
         }
     }
@@ -109,7 +109,7 @@ class KernelListener implements EventSubscriberInterface
      */
     public function onKernelRequestAfterLocale(GetResponseEvent $event)
     {
-        if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
+        if ($event->isMasterRequest()) {
             drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE);
         }
     }
