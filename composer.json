@@ -13,6 +13,7 @@
         "symfony-cmf/routing-bundle": "~1.1"
     },
     "autoload": {
+        "classmap": ["Drufony.php"],
         "psr-4": { "Bangpound\\Bundle\\DrupalBundle\\": "" }
     }
 }
