@@ -79,7 +79,7 @@ class DrupalRouter implements RouterInterface
 
             // The requested path is an unalaised Drupal route.
             return array(
-                '_drupal' => 'true',
+                '_legacy' => 'drupal',
                 '_controller' => function ($_router_item) {
                         $router_item = $_router_item;
 

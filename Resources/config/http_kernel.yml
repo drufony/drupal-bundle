@@ -11,7 +11,7 @@ services:
     bangpound_drupal.request_matcher:
         class:  %bangpound_drupal.request_matcher.class%
         calls:
-            - [ matchAttribute, [ '_drupal', 'true' ] ]
+            - [ matchAttribute, [ '_legacy', 'drupal' ] ]
 
     bangpound_drupal.listener.view:
         class: %bangpound_drupal.listener.view.class%
