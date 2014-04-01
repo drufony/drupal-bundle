@@ -41,6 +41,7 @@ services:
 
     bangpound_drupal.bootstrap.listener.kernel:
         class: %bangpound_drupal.bootstrap.listener.kernel.class%
+        arguments: [ @bangpound_drupal.drufony ]
         tags:
             - { name: kernel.event_subscriber }
 

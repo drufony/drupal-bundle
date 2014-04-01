@@ -16,10 +16,10 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class KernelListener implements EventSubscriberInterface
 {
-    /**
-     * @var string Current working directory
-     */
-    private $cwd;
+    public function __construct(\Drufony $drufony)
+    {
+        // Only need to inject the Drufony object to instantiated it correctly.
+    }
 
     /**
      * @return array
