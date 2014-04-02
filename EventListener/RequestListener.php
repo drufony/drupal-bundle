@@ -43,7 +43,7 @@ class RequestListener
         if ($this->matcher->matches($request)) {
             $q = $request->get('q');
             $router_item = menu_get_item($q);
-            $request->attributes->set('_router_item', $router_item);
+            $request->attributes->set('router_item', $router_item);
         }
     }
 }
