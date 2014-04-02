@@ -18,7 +18,7 @@ class LogoutHandler implements LogoutHandlerInterface
         $user = $token->getUser();
         if (is_a($user, 'Bangpound\\Bundle\\DrupalBundle\\Security\\User\\User')) {
 
-            /** @var \Bangpound\Bundle\DrupalBundle\Security\User\User $user */
+            /** @var \stdClass $user */
             $user = $token->getUser()->getDrupalUser();
 
             watchdog('user', 'Session closed for %name.', array('%name' => $user->name));

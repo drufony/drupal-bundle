@@ -17,17 +17,17 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class KernelListener implements EventSubscriberInterface
 {
     /**
-     * @var Current working directory.
+     * @var string Current working directory.
      */
     private $cwd;
 
     /**
-     * @var Drupal root directory.
+     * @var string Drupal root directory.
      */
     private $drupalRoot;
 
     /**
-     * @param $drupalRoot
+     * @param string   $drupalRoot
      * @param \Drufony $drufony
      */
     public function __construct($drupalRoot, \Drufony $drufony)

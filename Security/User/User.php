@@ -6,6 +6,10 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 class User implements AdvancedUserInterface, \Serializable
 {
+    /**
+     * @var \stdClass
+     * @param name
+     */
     private $user;
 
     /**

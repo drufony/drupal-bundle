@@ -55,7 +55,7 @@ class DrupalRouter implements RouterInterface
             'absolute' => $referenceType === self::ABSOLUTE_URL ? true : false,
         );
         $path = drupal_get_normal_path($name);
-        if ($item = menu_get_item($path)) {
+        if (menu_get_item($path)) {
             return url($name, $options);
         }
         throw new RouteNotFoundException;

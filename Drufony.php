@@ -87,11 +87,17 @@ class Drufony implements ContainerAwareInterface, DrupalInterface
         return static::$container->get($id);
     }
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public static function getResponse()
     {
         return static::$container->get('legacy.response');
     }
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Session\Session
+     */
     public static function getSession()
     {
         return static::$container->get('session');
