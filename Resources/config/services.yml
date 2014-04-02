@@ -19,7 +19,7 @@ parameters:
 
     bangpound_drupal.drufony.class: Drufony
 
-    bangpound_drupal.mail_system.class: Bangpound\Bridge\Drupal\SwiftMailSystem
+    bangpound_drupal.mail_system.class: Bangpound\Bundle\DrupalBundle\SwiftMailSystem
 
     bangpound_drupal.controller.class: Bangpound\Bridge\Drupal\Controller\Controller
 
