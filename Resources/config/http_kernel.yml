@@ -4,7 +4,7 @@ parameters:
 
     bangpound_drupal.listener.controller.class:    Bangpound\Bridge\Drupal\EventListener\ControllerListener
     bangpound_drupal.listener.shutdown.class:      Bangpound\LegacyPhp\EventListener\ShutdownListener
-    bangpound_drupal.listener.output_buffer.class: Bangpound\Bundle\DrupalBundle\EventListener\OutputBufferListener
+    bangpound_drupal.listener.output_buffer.class: Bangpound\LegacyPhp\EventListener\OutputBufferListener
     bangpound_drupal.listener.header.class:        Bangpound\LegacyPhp\EventListener\HeaderListener
 
 services:
@@ -27,9 +27,7 @@ services:
 
     bangpound_drupal.listener.output_buffer:
         class: %bangpound_drupal.listener.output_buffer.class%
-        arguments: [ @bangpound_drupal.request_matcher ]
-        calls:
-            - [ 'setContainer', [ @service_container ] ]
+        arguments: [ @bangpound_drupal.request_matcher, @legacy.response ]
         tags:
             - { name: kernel.event_subscriber }
 
@@ -38,3 +36,6 @@ services:
         arguments: [ @bangpound_drupal.request_matcher ]
         tags:
             - { name: kernel.event_subscriber }
+
+    legacy.response:
+        class: Symfony\Component\HttpFoundation\Response
