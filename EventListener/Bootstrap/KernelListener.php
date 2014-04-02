@@ -16,9 +16,20 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class KernelListener implements EventSubscriberInterface
 {
+    /**
+     * @var Current working directory.
+     */
     private $cwd;
+
+    /**
+     * @var Drupal root directory.
+     */
     private $drupalRoot;
 
+    /**
+     * @param $drupalRoot
+     * @param \Drufony $drufony
+     */
     public function __construct($drupalRoot, \Drufony $drufony)
     {
         $this->drupalRoot = $drupalRoot;
@@ -68,13 +79,10 @@ class KernelListener implements EventSubscriberInterface
      */
     public function onKernelRequestEarly(GetResponseEvent $event)
     {
-        $request = $event->getRequest();
-        if ($event->isMasterRequest()) {
-            drupal_bootstrap(DRUPAL_BOOTSTRAP_VARIABLES);
-            $path = $_GET['q'] = urldecode(substr($request->getPathInfo(), 1));
-            $request->query->set('q', $path);
-            $GLOBALS['base_url'] = $request->getSchemeAndHttpHost();
-        }
+        drupal_bootstrap(DRUPAL_BOOTSTRAP_VARIABLES);
+        $path = $_GET['q'] = urldecode(substr($event->getRequest()->getPathInfo(), 1));
+        $event->getRequest()->query->set('q', $path);
+        $GLOBALS['base_url'] = $event->getRequest()->getSchemeAndHttpHost();
     }
 
     /**
@@ -84,9 +92,7 @@ class KernelListener implements EventSubscriberInterface
      */
     public function onKernelRequestBeforeSession(GetResponseEvent $event)
     {
-        if ($event->isMasterRequest()) {
-            drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
-        }
+        drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
     }
 
     /**
@@ -96,13 +102,11 @@ class KernelListener implements EventSubscriberInterface
      */
     public function onKernelRequestAfterSession(GetResponseEvent $event)
     {
-        if ($event->isMasterRequest()) {
-            if (empty($GLOBALS['user'])) {
-                $GLOBALS['user'] = drupal_anonymous_user();
-                date_default_timezone_set(drupal_get_user_timezone());
-            }
-            drupal_bootstrap(DRUPAL_BOOTSTRAP_PAGE_HEADER);
+        if (empty($GLOBALS['user'])) {
+            $GLOBALS['user'] = drupal_anonymous_user();
+            date_default_timezone_set(drupal_get_user_timezone());
         }
+        drupal_bootstrap(DRUPAL_BOOTSTRAP_PAGE_HEADER);
     }
 
     /**
@@ -112,9 +116,7 @@ class KernelListener implements EventSubscriberInterface
      */
     public function onKernelRequestBeforeRouter(GetResponseEvent $event)
     {
-        if ($event->isMasterRequest()) {
-            drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-        }
+        drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
     }
 
     /**
@@ -124,9 +126,7 @@ class KernelListener implements EventSubscriberInterface
      */
     public function onKernelRequestAfterLocale(GetResponseEvent $event)
     {
-        if ($event->isMasterRequest()) {
-            drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE);
-        }
+        drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE);
     }
 
     /**
