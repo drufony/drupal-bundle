@@ -5,6 +5,7 @@
  * Contains Drufony.
  */
 
+use Bangpound\Bridge\Drupal\DrupalInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -13,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @see \Drupal
  */
-class Drufony implements ContainerAwareInterface
+class Drufony implements ContainerAwareInterface, DrupalInterface
 {
     /**
      * The current system version.
@@ -84,5 +85,15 @@ class Drufony implements ContainerAwareInterface
     public static function get($id)
     {
         return static::$container->get($id);
+    }
+
+    public static function getResponse()
+    {
+        return static::$container->get('legacy.response');
+    }
+
+    public static function getSession()
+    {
+        return static::$container->get('session');
     }
 }
