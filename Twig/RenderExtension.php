@@ -74,8 +74,7 @@ class RenderExtension extends \Twig_Extension
      */
     public function hide(&$context)
     {
-        $propertyPath = self::createPropertyPath(array_merge(array_slice(func_get_args(), 1)), '#printed');
-        $this->accessor->setValue($context, $propertyPath, true);
+        $this->toggle($context, true);
     }
 
     /**
@@ -83,8 +82,13 @@ class RenderExtension extends \Twig_Extension
      */
     public function show(&$context)
     {
+        $this->toggle($context, false);
+    }
+
+    private function toggle(&$context, $value)
+    {
         $propertyPath = self::createPropertyPath(array_merge(array_slice(func_get_args(), 1)), '#printed');
-        $this->accessor->setValue($context, $propertyPath, false);
+        $this->accessor->setValue($context, $propertyPath, $value);
     }
 
     /**
