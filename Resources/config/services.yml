@@ -12,11 +12,6 @@ parameters:
 #   Request, View and Shutdown listener integrate Symfony and Drupal 7.
     bangpound_drupal.listener.request.class: Bangpound\Bundle\DrupalBundle\EventListener\RequestListener
 
-
-#   Pluggable parts of Drupal that are replaced by Symfony components.
-    bangpound_drupal.conf.session_inc: sites/all/modules/symfony-module/session.inc
-    bangpound_drupal.conf.mail_system.default_system: Bangpound\Bundle\DrupalBundle\SwiftMailSystem
-
 #   Controller parameter converter for Entities.
     bangpound_drupal.converter.drupal_entity.class: Bangpound\Bundle\DrupalBundle\ParamConverter\EntityParamConverter
 
@@ -24,7 +19,7 @@ parameters:
 
     bangpound_drupal.drufony.class: Drufony
 
-    bangpound_drupal.mailer.class: Bangpound\Bridge\Drupal\SwiftMailSystem
+    bangpound_drupal.mail_system.class: Bangpound\Bridge\Drupal\SwiftMailSystem
 
 services:
     bangpound_drupal.response:
@@ -58,5 +53,5 @@ services:
         calls:
             - [ 'setContainer', [ @service_container ] ]
 
-    bangpound_drupal.mailer:
-        class: %bangpound_drupal.mailer.class%
+    bangpound_drupal.mail_system:
+        class: %bangpound_drupal.mail_system.class%

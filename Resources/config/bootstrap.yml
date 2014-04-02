@@ -15,7 +15,7 @@ parameters:
     bangpound_drupal.bootstrap.listener.autoload.class:       Bangpound\Bridge\Drupal\EventListener\AutoloadListener
 
 #   Register Symfony parameters as Drupal 7 configuration variables.
-    bangpound_drupal.bootstrap.listener.variables.class:      Bangpound\Bundle\DrupalBundle\EventListener\VariablesListener
+    bangpound_drupal.bootstrap.listener.variables.class:      Bangpound\Bridge\Drupal\EventListener\VariablesListener
 
 #   Bootstrap listener coordinates Drupal bootstrap during the kernel.request event.
     bangpound_drupal.bootstrap.listener.kernel.class:         Bangpound\Bundle\DrupalBundle\EventListener\Bootstrap\KernelListener
@@ -83,7 +83,6 @@ services:
 
     bangpound_drupal.bootstrap.listener.variables:
         class: %bangpound_drupal.bootstrap.listener.variables.class%
-        calls:
-            - [ 'setContainer', [ @service_container ] ]
+        arguments: [ %bangpound_drupal.conf% ]
         tags:
             - { name: kernel.event_subscriber }

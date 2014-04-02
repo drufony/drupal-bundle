@@ -24,6 +24,16 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('url')->defaultValue('')->end()
                 ->scalarNode('prefix')->defaultValue('')->end()
+                ->arrayNode('conf')
+                    ->defaultValue(array(
+                        'session_inc' => 'sites/all/modules/symfony-module/session.inc',
+                        'mail_system' => array(
+                            'default-system' => '%bangpound_drupal.mail_system.class%',
+                        )
+                    ))
+                    ->prototype('variable')
+                    ->end()
+                ->end()
             ->end()
         ;
 
