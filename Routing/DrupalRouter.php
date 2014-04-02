@@ -89,6 +89,7 @@ class DrupalRouter implements RouterInterface
                 '_legacy' => 'drupal',
                 '_controller' => 'bangpound_drupal.controller:deliverAction',
                 '_route' => $router_item['path'],
+                '_method' => array('GET', 'POST'),
             );
         } else {
             throw new ResourceNotFoundException(('Route for '. $path .' not found'));
