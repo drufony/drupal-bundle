@@ -66,6 +66,7 @@ services:
         class: %bangpound_drupal.bootstrap.listener.page_header.class%
         tags:
             - { name: kernel.event_listener, event: drupal_bootstrap.get.page_header, method: onBootstrapPageHeader, priority: 8 }
+            - { name: kernel.event_listener, event: drupal_bootstrap.filter.page_header, method: sendResponseHeaders }
 
     bangpound_drupal.bootstrap.listener.full:
         class: %bangpound_drupal.bootstrap.listener.full.class%
