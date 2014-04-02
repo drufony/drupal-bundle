@@ -87,19 +87,7 @@ class DrupalRouter implements RouterInterface
             // The requested path is an unalaised Drupal route.
             return array(
                 '_legacy' => 'drupal',
-                '_controller' => function ($_router_item) {
-                        $router_item = $_router_item;
-
-                        if (!$router_item['access']) {
-                            return MENU_ACCESS_DENIED;
-                        }
-
-                        if ($router_item['include_file']) {
-                            require_once DRUPAL_ROOT .'/'. $router_item['include_file'];
-                        }
-
-                        return call_user_func_array($router_item['page_callback'], $router_item['page_arguments']);
-                    },
+                '_controller' => 'bangpound_drupal.controller:deliverAction',
                 '_route' => $router_item['path'],
             );
         } else {

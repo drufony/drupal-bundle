@@ -21,6 +21,8 @@ parameters:
 
     bangpound_drupal.mail_system.class: Bangpound\Bridge\Drupal\SwiftMailSystem
 
+    bangpound_drupal.controller.class: Bangpound\Bridge\Drupal\Controller\Controller
+
 services:
     bangpound_drupal.response:
         scope: request
@@ -55,3 +57,6 @@ services:
 
     bangpound_drupal.mail_system:
         class: %bangpound_drupal.mail_system.class%
+
+    bangpound_drupal.controller:
+        class: %bangpound_drupal.controller.class%
