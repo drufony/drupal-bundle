@@ -21,8 +21,6 @@ parameters:
     bangpound_drupal.bootstrap.listener.kernel.class:         Bangpound\Bundle\DrupalBundle\EventListener\Bootstrap\KernelListener
     bangpound_drupal.bootstrap.phases.class:                  Drupal\Core\BootstrapPhases
 
-    bangpound_drupal.bootstrap.listener.command.class:        Bangpound\Bundle\DrupalBundle\EventListener\CommandListener
-
 services:
     bangpound_drupal.bootstrap:
         class: %bangpound_drupal.bootstrap.class%

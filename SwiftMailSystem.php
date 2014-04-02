@@ -2,8 +2,8 @@
 
 namespace Bangpound\Bundle\DrupalBundle;
 
-class SwiftMailSystem extends \Bangpound\Bridge\Drupal\SwiftMailSystem {
-
+class SwiftMailSystem extends \Bangpound\Bridge\Drupal\SwiftMailSystem
+{
     /**
      *
      */
