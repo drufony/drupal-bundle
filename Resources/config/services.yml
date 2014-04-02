@@ -9,9 +9,6 @@ parameters:
     bangpound_drupal.request_matcher.class: Symfony\Component\HttpFoundation\RequestMatcher
     bangpound_drupal.router.class: Bangpound\Bundle\DrupalBundle\Routing\DrupalRouter
 
-#   Request, View and Shutdown listener integrate Symfony and Drupal 7.
-    bangpound_drupal.listener.request.class: Bangpound\Bundle\DrupalBundle\EventListener\RequestListener
-
 #   Controller parameter converter for Entities.
     bangpound_drupal.converter.drupal_entity.class: Bangpound\Bundle\DrupalBundle\ParamConverter\EntityParamConverter
 
