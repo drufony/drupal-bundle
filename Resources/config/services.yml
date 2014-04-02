@@ -28,12 +28,6 @@ services:
         scope: request
         class: %bangpound_drupal.response.class%
 
-    bangpound_drupal.listener.request:
-        class: %bangpound_drupal.listener.request.class%
-        arguments: [ @bangpound_drupal.request_matcher ]
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: -1024 }
-
     bangpound_drupal.converter.drupal_entity:
         class: %bangpound_drupal.converter.drupal_entity.class%
         tags:
