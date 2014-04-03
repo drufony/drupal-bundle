@@ -21,6 +21,7 @@ parameters:
     bangpound_drupal.controller.class: Bangpound\Bridge\Drupal\Controller\Controller
 
     bangpound_drupal.converter.router_item.class: Bangpound\Bridge\Drupal\ParamConverter\RouterItemConverter
+    bangpound_drupal.data_collector.class: Bangpound\Bridge\Drupal\DataCollector\DrupalDatabaseDataCollector
 
 services:
     bangpound_drupal.converter.drupal_entity:
@@ -54,3 +55,6 @@ services:
 
     bangpound_drupal.controller:
         class: %bangpound_drupal.controller.class%
+
+    bangpound_drupal.data_collector:
+        class: %bangpound_drupal.data_collector.class%
