@@ -23,10 +23,6 @@ parameters:
     bangpound_drupal.converter.router_item.class: Bangpound\Bridge\Drupal\ParamConverter\RouterItemConverter
 
 services:
-    bangpound_drupal.response:
-        scope: request
-        class: %bangpound_drupal.response.class%
-
     bangpound_drupal.converter.drupal_entity:
         class: %bangpound_drupal.converter.drupal_entity.class%
         tags:
