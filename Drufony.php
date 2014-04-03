@@ -6,8 +6,12 @@
  */
 
 use Bangpound\Bridge\Drupal\DrupalInterface;
+use Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Static Service Container wrapper.
@@ -96,10 +100,34 @@ class Drufony implements ContainerAwareInterface, DrupalInterface
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Session\Session
+     * @return Session
      */
     public static function getSession()
     {
         return static::$container->get('session');
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    public static function getEventDispatcher()
+    {
+        return static::$container->get('event_dispatcher');
+    }
+
+    /**
+     * @return KernelInterface
+     */
+    public static function getKernel()
+    {
+        return static::$container->get('kernel');
+    }
+
+    /**
+     * @return Logger
+     */
+    public static function getLogger()
+    {
+        return static::$container->get('logger');
     }
 }
