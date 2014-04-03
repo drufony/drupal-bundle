@@ -96,7 +96,7 @@ class Drufony implements ContainerAwareInterface, DrupalInterface
      */
     public static function getResponse()
     {
-        return static::$container->get('legacy.response');
+        return static::$container->get('response');
     }
 
     /**

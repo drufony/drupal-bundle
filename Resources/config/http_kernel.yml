@@ -27,7 +27,9 @@ services:
 
     bangpound_drupal.listener.output_buffer:
         class: %bangpound_drupal.listener.output_buffer.class%
-        arguments: [ @bangpound_drupal.request_matcher, @legacy.response ]
+        arguments: [ @bangpound_drupal.request_matcher ]
+        calls:
+            - [ setContainer, [ @service_container ]]
         tags:
             - { name: kernel.event_subscriber }
 
@@ -37,5 +39,6 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    legacy.response:
+    response:
         class: Symfony\Component\HttpFoundation\Response
+        scope: request
