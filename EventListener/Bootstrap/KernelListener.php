@@ -3,9 +3,7 @@
 namespace Bangpound\Bundle\DrupalBundle\EventListener\Bootstrap;
 
 use Bangpound\Bridge\Drupal\BootstrapEvents;
-use Bangpound\Bridge\Drupal\Event\GetCallableForPhase;
 use Symfony\Component\Console\ConsoleEvents;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -66,7 +64,7 @@ class KernelListener implements EventSubscriberInterface
      * This is restored in restoreWorkingDirectory().
      *
      */
-    public function onBootstrapConfiguration(GetCallableForPhase $event)
+    public function onBootstrapConfiguration()
     {
         $this->cwd = getcwd();
         chdir($this->drupalRoot);
@@ -88,9 +86,9 @@ class KernelListener implements EventSubscriberInterface
     /**
      * Listener bootstraps Drupal to DRUPAL_BOOTSTRAP_SESSION
      *
-     * @param GetResponseEvent $event
+     * @internal param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
      */
-    public function onKernelRequestBeforeSession(GetResponseEvent $event)
+    public function onKernelRequestBeforeSession()
     {
         drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
     }
@@ -98,9 +96,9 @@ class KernelListener implements EventSubscriberInterface
     /**
      * Listener bootstraps Drupal to DRUPAL_BOOTSTRAP_PAGE_HEADER
      *
-     * @param GetResponseEvent $event
+     * @internal param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
      */
-    public function onKernelRequestAfterSession(GetResponseEvent $event)
+    public function onKernelRequestAfterSession()
     {
         if (empty($GLOBALS['user'])) {
             $GLOBALS['user'] = drupal_anonymous_user();
@@ -112,9 +110,9 @@ class KernelListener implements EventSubscriberInterface
     /**
      * Listener searches for URL aliased Drupal paths.
      *
-     * @param GetResponseEvent $event
+     * @internal param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
      */
-    public function onKernelRequestBeforeRouter(GetResponseEvent $event)
+    public function onKernelRequestBeforeRouter()
     {
         drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
     }
@@ -122,9 +120,9 @@ class KernelListener implements EventSubscriberInterface
     /**
      * Listener bootstraps Drupal to DRUPAL_BOOTSTRAP_LANGUAGE
      *
-     * @param GetResponseEvent $event
+     * @internal param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
      */
-    public function onKernelRequestAfterLocale(GetResponseEvent $event)
+    public function onKernelRequestAfterLocale()
     {
         drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE);
     }
@@ -135,9 +133,9 @@ class KernelListener implements EventSubscriberInterface
      * This is probably unnecessary because the cwd for Symfony web processes
      * is already the web root.
      *
-     * @param Event $event
+     * @internal param \Symfony\Component\EventDispatcher\Event $event
      */
-    public function restoreWorkingDirectory(Event $event)
+    public function restoreWorkingDirectory()
     {
         if ($this->cwd) {
             chdir($this->cwd);
