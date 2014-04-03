@@ -9,8 +9,14 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class ToolbarExtension extends \Twig_Extension
 {
+    /**
+     * @var RequestStack
+     */
     private $requestStack;
 
+    /**
+     * @param RequestStack $requestStack
+     */
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
@@ -34,6 +40,9 @@ class ToolbarExtension extends \Twig_Extension
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFunctions()
     {
         return array(
@@ -41,6 +50,9 @@ class ToolbarExtension extends \Twig_Extension
         );
     }
 
+    /**
+     * Clumsily render the Drupal 7 toolbar inside a Twig page.
+     */
     public function renderToolbar()
     {
         if ($this->requestStack->getCurrentRequest() === $this->requestStack->getMasterRequest()) {
