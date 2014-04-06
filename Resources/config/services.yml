@@ -22,6 +22,7 @@ parameters:
 
     bangpound_drupal.converter.router_item.class: Bangpound\Bridge\Drupal\ParamConverter\RouterItemConverter
     bangpound_drupal.data_collector.class: Bangpound\Bridge\Drupal\DataCollector\DrupalDatabaseDataCollector
+    bangpound_drupal.collector.class: Bangpound\Bridge\Drupal\DataCollector\DrupalCollector
 
 services:
     bangpound_drupal.converter.drupal_entity:
@@ -58,3 +59,9 @@ services:
 
     bangpound_drupal.data_collector:
         class: %bangpound_drupal.data_collector.class%
+
+    bangpound_drupal.collector:
+        class: %bangpound_drupal.collector.class%
+        arguments: [ @bangpound_drupal.request_matcher ]
+        tags:
+            - { name: data_collector, template: "BangpoundDrupalBundle:Collector:drupal", id: "drupal" }
