@@ -65,3 +65,4 @@ services:
         arguments: [ @bangpound_drupal.request_matcher ]
         tags:
             - { name: data_collector, template: "BangpoundDrupalBundle:Collector:drupal", id: "drupal" }
+            - { name: kernel.event_subscriber }
