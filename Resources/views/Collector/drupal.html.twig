@@ -66,9 +66,9 @@
         })) }}
     {% else %}
         {% if collector.drupal %}
-        {% if collector.requirements %}
-            {{ block('requirements') }}
-        {% endif %}
+            {% if collector.requirements %}
+                {{ block('requirements') }}
+            {% endif %}
             {{ block('queries') }}
         {% endif %}
     {% endif %}
