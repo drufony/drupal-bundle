@@ -21,8 +21,6 @@ parameters:
     bangpound_drupal.bootstrap.listener.kernel.class:         Bangpound\Bundle\DrupalBundle\EventListener\Bootstrap\KernelListener
     bangpound_drupal.bootstrap.phases.class:                  Drupal\Core\BootstrapPhases
 
-    bangpound_drupal.listener.view.class:                     Bangpound\Bridge\Drupal\EventListener\ViewListener
-
 services:
     bangpound_drupal.bootstrap:
         class: %bangpound_drupal.bootstrap.class%
@@ -68,7 +66,6 @@ services:
         class: %bangpound_drupal.bootstrap.listener.page_header.class%
         tags:
             - { name: kernel.event_listener, event: drupal_bootstrap.get.page_header, method: onBootstrapPageHeader, priority: 8 }
-            - { name: kernel.event_listener, event: drupal_bootstrap.filter.page_header, method: sendResponseHeaders }
 
     bangpound_drupal.bootstrap.listener.full:
         class: %bangpound_drupal.bootstrap.listener.full.class%

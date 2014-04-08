@@ -5,7 +5,6 @@ imports:
     - { resource: twig.yml }
 
 parameters:
-    bangpound_drupal.response.class:  Symfony\Component\HttpFoundation\Response
     bangpound_drupal.request_matcher.class: Symfony\Component\HttpFoundation\RequestMatcher
     bangpound_drupal.router.class: Bangpound\Bundle\DrupalBundle\Routing\DrupalRouter
 
