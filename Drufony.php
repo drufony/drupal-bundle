@@ -92,14 +92,6 @@ class Drufony implements ContainerAwareInterface, DrupalInterface
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public static function getResponse()
-    {
-        return static::$container->get('response');
-    }
-
-    /**
      * @return Session
      */
     public static function getSession()
