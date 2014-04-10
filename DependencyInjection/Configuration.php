@@ -22,7 +22,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('url')->defaultValue('')->end()
+                ->scalarNode('url')->defaultValue('http://localhost/index.php')->end()
                 ->scalarNode('prefix')->defaultValue('')->end()
                 ->arrayNode('conf')
                     ->defaultValue(array(
