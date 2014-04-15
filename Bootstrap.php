@@ -65,7 +65,7 @@ class Bootstrap extends BaseBootstrap
     public function boot()
     {
         if (!defined('DRUPAL_ROOT')) {
-            define('DRUPAL_ROOT', $this->root);
+            define('DRUPAL_ROOT', realpath($this->root));
         }
         require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
         drupal_override_server_variables(array('url' => $this->uri));
