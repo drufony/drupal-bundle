@@ -31,6 +31,7 @@ class KernelListener implements EventSubscriberInterface
     public function __construct($drupalRoot, \Drufony $drufony)
     {
         $this->drupalRoot = $drupalRoot;
+        $this->cwd = getcwd();
         // Only need to inject the Drufony object to instantiated it correctly.
     }
 
@@ -53,6 +54,7 @@ class KernelListener implements EventSubscriberInterface
             KernelEvents::FINISH_REQUEST => array(
                 array('restoreWorkingDirectory', -512),
             ),
+            ConsoleEvents::COMMAND => 'saveWorkingDirectory',
             ConsoleEvents::EXCEPTION => 'restoreWorkingDirectory',
             ConsoleEvents::TERMINATE => 'restoreWorkingDirectory',
         );
@@ -66,8 +68,19 @@ class KernelListener implements EventSubscriberInterface
      */
     public function onBootstrapConfiguration()
     {
+        if (!drupal_is_cli()) {
+            chdir($this->drupalRoot);
+        }
+    }
+
+    public function saveWorkingDirectory()
+    {
         $this->cwd = getcwd();
-        chdir($this->drupalRoot);
+    }
+
+    public function __destruct()
+    {
+        $this->restoreWorkingDirectory();
     }
 
     /**
