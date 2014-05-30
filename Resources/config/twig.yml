@@ -1,9 +1,8 @@
 parameters:
 #   Twig extensions to replicate Drupal 7 render and theme functions.
-    bangpound_drupal.twig.render_extension.class: Bangpound\Bundle\DrupalBundle\Twig\RenderExtension
-    bangpound_drupal.twig.theme_extension.class: Bangpound\Bundle\DrupalBundle\Twig\ThemeExtension
-    bangpound_drupal.twig.toolbar_extension.class: Bangpound\Bundle\DrupalBundle\Twig\ToolbarExtension
-
+    bangpound_drupal.twig.render_extension.class: Bangpound\Bridge\Drupal\Twig\RenderExtension
+    bangpound_drupal.twig.theme_extension.class: Bangpound\Bridge\Drupal\Twig\ThemeExtension
+    bangpound_drupal.twig.toolbar_extension.class: Bangpound\Bridge\Drupal\Twig\ToolbarExtension
 
 services:
     bangpound_drupal.twig.render_extension:
